@@ -1,0 +1,96 @@
+require 'mongo'
+require_relative 'document_not_found'
+
+module Mongobzar
+  module Mapping
+    class Mapper
+      def initialize(database_name)
+        @connection = Mongo::Connection.new
+        @db = @connection.db(database_name)
+      end
+
+      def all
+        dtos = mongo_collection.find
+        dtos.map do |dto|
+          build_domain_object(dto)
+        end
+      end
+
+      def find(id)
+        build_domain_object(find_dto(id))
+      end
+
+      def build_domain_object(dto)
+        domain_object = build_new(dto)
+        domain_object.id = dto['_id']
+        build_domain_object!(domain_object, dto)
+        domain_object
+      end
+
+      def build_domain_object!(domain_object, dto)
+      end
+
+      def find_dto(id)
+        if id.kind_of?(String)
+          id = BSON::ObjectId.from_string(id)
+        end
+        res = mongo_collection.find_one('_id' => id)
+        raise DocumentNotFound unless res
+        res
+      end
+
+      def insert_dto(dto)
+        mongo_collection.insert(dto)
+      end
+
+      def build_dto(domain_object)
+        dto = {}
+        dto['_id'] = BSON::ObjectId.new
+        build_dto!(dto, domain_object)
+        dto
+      end
+
+      def build_dto!(dto, domain_object)
+      end
+
+      def insert(domain_object)
+        dto = build_dto(domain_object)
+        insert_dto(dto)
+        update_domain_object_after_insert(domain_object, dto)
+      end
+
+      def update_domain_object_after_insert(domain_object, dto)
+        domain_object.id = dto['_id']
+      end
+      protected :update_domain_object_after_insert
+
+      def update(domain_object)
+        dto = find_dto(domain_object.id)
+        update_dto!(dto, domain_object)
+        mongo_collection.update({'_id' => dto['_id']}, dto)
+      end
+
+      def update_dto!(dto, domain_object)
+        build_dto!(dto, domain_object)
+      end
+
+      def destroy(domain_object)
+        mongo_collection.remove({ _id: domain_object.id })
+      end
+
+      def set_mongo_collection(name)
+        @mongo_collection = @db.collection(name, safe: true)
+      end
+      protected :set_mongo_collection
+
+      def clear_everything!
+        mongo_collection.remove
+      end
+
+      protected
+        attr_reader :connection
+        attr_reader :db
+        attr_reader :mongo_collection
+    end
+  end
+end
