@@ -44,13 +44,13 @@ describe 'timestamps' do
     it 'sets created_at for document' do
       @mapper.clock = FakeClock.frozen
       @mapper.insert(@to1)
-      assert_equal FakeClock.frozen.now, find_timestamped_objects[0]['created_at']
+      FakeClock.frozen.now.should == find_timestamped_objects[0]['created_at']
     end
 
     it 'sets created_at for domain object' do
       @mapper.clock = FakeClock.frozen
       @mapper.insert(@to1)
-      assert_equal FakeClock.frozen.now, @to1.created_at
+      FakeClock.frozen.now.should == @to1.created_at
     end
   end
 
@@ -61,7 +61,7 @@ describe 'timestamps' do
       @mapper.clock = FakeClock.different_frozen
 
       @mapper.update(@to1)
-      assert_equal FakeClock.frozen.now, find_timestamped_objects[0]['created_at']
+      FakeClock.frozen.now.should == find_timestamped_objects[0]['created_at']
     end
   end
 
@@ -70,7 +70,7 @@ describe 'timestamps' do
       @mapper.clock = FakeClock.frozen
       @mapper.insert(@to1)
 
-      assert_equal FakeClock.frozen.now, @mapper.find(@to1.id).created_at
+      FakeClock.frozen.now.should == @mapper.find(@to1.id).created_at
     end
   end
 end

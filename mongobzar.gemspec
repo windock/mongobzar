@@ -11,8 +11,8 @@ Gem::Specification.new do |gem|
   gem.add_dependency('bson_ext')
   gem.add_dependency('rake')
   gem.add_dependency('mongo')
-  gem.add_development_dependency('ruby-debug19')
-  gem.add_development_dependency('rr')
+  gem.add_development_dependency('debugger')
+  gem.add_development_dependency('rspec')
 
   gem.files         = `git ls-files`.split($\)
   gem.executables   = gem.files.grep(%r{^bin/}).map{ |f| File.basename(f) }

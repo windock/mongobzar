@@ -30,15 +30,15 @@ module Mongobzar
 
     class SimpleObjectMappingMatcher < MappingMatcher
       def assert_single_persisted(simple_object, dto)
-        assert_equal simple_object.id, dto['_id']
-        assert_equal simple_object.name, dto['name']
-        assert_equal simple_object.description, dto['description']
+        simple_object.id.should == dto['_id']
+        simple_object.name.should == dto['name']
+        simple_object.description.should == dto['description']
       end
 
       def assert_single_loaded(specification, simple_object)
-        assert_equal specification.id, simple_object.id
-        assert_equal specification.name, simple_object.name
-        assert_equal specification.description, simple_object.description
+        specification.id.should == simple_object.id
+        specification.name.should == simple_object.name
+        specification.description.should == simple_object.description
       end
     end
   end
@@ -127,9 +127,7 @@ describe 'CRUD operations' do
     end
 
     it 'raises DocumentNotFound if document with such id was not found' do
-      assert_raises(Mongobzar::Mapping::DocumentNotFound) do
-        @mapper.find(BSON::ObjectId.new)
-      end
+      expect { @mapper.find(BSON::ObjectId.new) }.to raise_error(Mongobzar::Mapping::DocumentNotFound)
     end
   end
 end

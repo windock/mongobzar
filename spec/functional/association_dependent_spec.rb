@@ -89,14 +89,14 @@ module Mongobzar
 
     class PetMappingMatcher < MappingMatcher
       def assert_single_dependent_persisted(pet, owner, pet_dto)
-        assert_equal pet.id, pet_dto['_id']
-        assert_equal pet.name, pet_dto['name']
-        assert_equal owner.id, pet_dto['owner_id']
+        pet.id.should == pet_dto['_id']
+        pet.name.should == pet_dto['name']
+        owner.id.should == pet_dto['owner_id']
       end
 
       def assert_single_loaded(specification, pet)
-        assert_equal pet.id, specification.id
-        assert_equal pet.name, specification.name
+        pet.id.should == specification.id
+        pet.name.should == specification.name
       end
     end
   end
@@ -137,19 +137,19 @@ describe 'Dependent association' do
       it 'sets created_at for document' do
         @owner_mapper.clock = FakeClock.frozen
         @owner_mapper.insert(@owner)
-        assert_equal FakeClock.frozen.now, find_pet_documents[0]['created_at']
+        FakeClock.frozen.now.should == find_pet_documents[0]['created_at']
       end
 
       it 'ets created_at for domain_object' do
         @owner_mapper.clock = FakeClock.frozen
         @owner_mapper.insert(@owner)
-        assert_equal FakeClock.frozen.now, @pet.created_at
+        FakeClock.frozen.now.should == @pet.created_at
       end
 
       it 'sets the same created-at for both domain object and document' do
         @owner_mapper.clock = FakeClock.changes_year
         @owner_mapper.insert(@owner)
-        assert_equal find_pet_documents[0]['created_at'], @pet.created_at
+        find_pet_documents[0]['created_at'].should == @pet.created_at
       end
     end
 
@@ -161,7 +161,7 @@ describe 'Dependent association' do
 
         @pet.name = 'whatever'
         @owner_mapper.update(@owner)
-        assert_equal FakeClock.frozen.now, find_pet_documents[0]['created_at']
+        FakeClock.frozen.now.should == find_pet_documents[0]['created_at']
       end
     end
 
@@ -170,7 +170,7 @@ describe 'Dependent association' do
         @owner_mapper.clock = FakeClock.frozen
         @owner_mapper.insert(@owner)
 
-        assert_equal FakeClock.frozen.now, @owner_mapper.find(@owner.id).pets[0].created_at
+        FakeClock.frozen.now.should == @owner_mapper.find(@owner.id).pets[0].created_at
       end
     end
   end

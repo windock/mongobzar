@@ -72,21 +72,21 @@ module Mongobzar
 
     class AddressMappingMatcher < MappingMatcher
       def assert_single_loaded(specification, address)
-        refute_nil address
-        refute_nil address.id
-        assert_equal specification.id, address.id
-        assert_equal specification.street, address.street
+        address.should_not be_nil
+        address.id.should_not be_nil
+        specification.id.should == address.id
+        specification.street.should == address.street
       end
 
       def assert_single_persisted(address, dto)
-        refute_nil dto
-        refute_nil dto['_id']
-        assert_equal address.id, dto['_id']
-        assert_equal address.street, dto['street']
+        dto.should_not be_nil
+        dto['_id'].should_not be_nil
+        address.id.should == dto['_id']
+        address.street.should == dto['street']
       end
 
       def assert_embedded_persisted(domain_objects, mongo_collection)
-        assert_equal domain_objects.size, mongo_collection.size
+        domain_objects.size.should == mongo_collection.size
         domain_objects.each_with_index do |domain_object, i|
           assert_single_persisted(domain_object, mongo_collection[i])
         end
@@ -139,7 +139,7 @@ describe 'Embedded association with identity' do
         @person_mapper.update(@person)
         work_address_document = find_work_address_document
         @matcher.assert_single_persisted(@work_address, work_address_document)
-        assert_equal work_address_original_id, work_address_document['_id']
+        work_address_original_id.should == work_address_document['_id']
       end
     end
 
@@ -194,7 +194,7 @@ describe 'Embedded association with identity' do
 
             address_documents = find_address_documents
             @matcher.assert_embedded_persisted([@address1, @address2], address_documents)
-            assert_equal address1_original_id, address_documents[0]['_id']
+            address1_original_id.should == address_documents[0]['_id']
           end
         end
 
@@ -220,7 +220,7 @@ describe 'Embedded association with identity' do
 
           address_documents = find_address_documents
           @matcher.assert_embedded_persisted([@address1], address_documents)
-          assert_equal original_id, address_documents[0]['_id']
+          original_id.should == address_documents[0]['_id']
         end
       end
     end

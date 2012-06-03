@@ -57,12 +57,12 @@ class IdGenerator
 end
 
 def assert_same_dict(d1, d2)
-  assert_equal d1.size, d2.size
+  d1.size.should == d2.size
   d1.each do |key, value|
     matched_by_key = d2.detect { |k, v| k == key }
-    assert !matched_by_key.nil?
+    matched_by_key.should_not be_nil
     d2_key = matched_by_key.first
-    assert_equal d1[key], d2[d2_key]
+    d1[key].should == d2[d2_key]
   end
 end
 
@@ -96,16 +96,16 @@ describe Mongobzar::Mapping::MappedCollection do
       end
 
       it 'builds dtos from domain objects' do
-        assert_equal [@dto1, @dto2], @mc.dtos
+        [@dto1, @dto2].should == @mc.dtos
       end
 
       it 'returns domain objects as were loaded' do
-        assert_equal [@d1, @d2], @mc.domain_objects
+        [@d1, @d2].should == @mc.domain_objects
       end
 
       it 'builds dict' do
         expected_dict = { @d1 => @dto1, @d2 => @dto2 }
-        assert_equal expected_dict, @mc.dict
+        expected_dict.should == @mc.dict
       end
     end
 
@@ -115,14 +115,14 @@ describe Mongobzar::Mapping::MappedCollection do
       end
 
       it 'buids domain objects from dtos' do
-        assert_equal [
+        [
           domain_object_with_id('d1', 1),
           domain_object_with_id('d2', 2)
-        ], @mc.domain_objects
+        ].should == @mc.domain_objects
       end
 
       it 'returns dtos as were loaded' do
-        assert_equal [@dto1, @dto2], @mc.dtos
+        [@dto1, @dto2].should == @mc.dtos
       end
 
       it 'builds dict' do
@@ -149,17 +149,17 @@ describe Mongobzar::Mapping::MappedCollection do
         end
 
         it 'dtos' do
-          assert_equal [@dto1, @dto2, @dto3], @mc.dtos
+          [@dto1, @dto2, @dto3].should == @mc.dtos
         end
 
         it 'dict' do
           dict = @mc.dict
-          assert_equal({
+          {
             @d1 => @dto1,
             @d2 => @dto2,
             @d3_wid => @dto3
-          }, dict)
-          assert @d3_wid.id.nil?
+          }.should == dict
+          @d3_wid.id.should be_nil
         end
       end
 
@@ -169,13 +169,11 @@ describe Mongobzar::Mapping::MappedCollection do
         end
 
         it 'dtos' do
-          assert_equal [@dto1], @mc.dtos
+          [@dto1].should == @mc.dtos
         end
 
         it 'dict' do
-          assert_equal({
-            @d1 => @dto1
-          }, @mc.dict)
+          { @d1 => @dto1 }.should == @mc.dict
         end
       end
 
@@ -189,14 +187,11 @@ describe Mongobzar::Mapping::MappedCollection do
         end
 
         it 'dtos' do
-          assert_equal [@expected_dto1, @expected_dto2], @mc.dtos
+          [@expected_dto1, @expected_dto2].should == @mc.dtos
         end
 
         it 'dict' do
-          assert_equal({
-            @d1 => @expected_dto1,
-            @d2 => @expected_dto2
-          }, @mc.dict)
+          { @d1 => @expected_dto1, @d2 => @expected_dto2 }.should == @mc.dict
         end
       end
 
@@ -210,14 +205,11 @@ describe Mongobzar::Mapping::MappedCollection do
           @mc.update([@d2, @d3_wid])
         end
         it 'dtos' do
-          assert_equal [@expected_dto1, @expected_dto2], @mc.dtos
+          [@expected_dto1, @expected_dto2].should == @mc.dtos
         end
 
         it 'dict' do
-          assert_equal({
-            @d2 => @expected_dto1,
-            @d3_wid => @expected_dto2
-          }, @mc.dict)
+          { @d2 => @expected_dto1, @d3_wid => @expected_dto2 }.should == @mc.dict
         end
       end
 
