@@ -31,8 +31,7 @@ describe 'timestamps' do
   end
 
   before do
-    @connection = Mongo::Connection.new
-    @db = @connection.db('testing')
+    setup_connection
     @timestamped_objects_collection = @db.collection('timestamped_objects')
     @mapper = Mongobzar::Test::TimestampedObjectMapper.new('testing')
     @mapper.clear_everything!

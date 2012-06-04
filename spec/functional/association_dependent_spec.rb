@@ -109,8 +109,7 @@ describe 'Dependent association' do
   end
 
   before do
-    @connection = Mongo::Connection.new
-    @db = @connection.db('testing')
+    setup_connection
     @owners_collection = @db.collection('owners')
     @owner_mapper = OwnerMapper.new('testing')
     @owner_mapper.clear_everything!

@@ -47,8 +47,7 @@ end
 include Mongobzar::Test
 describe 'CRUD operations' do
   before do
-    @connection = Mongo::Connection.new
-    @db = @connection.db('testing')
+    setup_connection
     @simple_objects_collection = @db.collection('simple_objects')
     @mapper = SimpleObjectMapper.new('testing')
     @mapper.clear_everything!
