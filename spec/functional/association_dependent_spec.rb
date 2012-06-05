@@ -88,7 +88,20 @@ module Mongobzar
     end
 
     class PetMappingMatcher < MappingMatcher
-      def assert_single_dependent_persisted(pet, owner, pet_dto)
+      def initialize(collection)
+        @collection = collection
+      end
+
+      def find_many_documents
+        @collection.find.to_a
+      end
+
+      def assert_dependent_persisted(pets, owner)
+        dtos = find_many_documents
+        assert_correct_dependent_dtos(pets, owner, dtos)
+      end
+
+      def assert_correct_dependent_dto(pet, owner, pet_dto)
         pet.id.should == pet_dto['_id']
         pet.name.should == pet_dto['name']
         owner.id.should == pet_dto['owner_id']
@@ -104,8 +117,8 @@ end
 
 include Mongobzar::Test
 describe 'Dependent association' do
-  def find_pet_documents
-    @pets_collection.find.to_a
+  def the_only_pet_document
+    @pets_collection.find.to_a[0]
   end
 
   before do
@@ -124,7 +137,7 @@ describe 'Dependent association' do
       pet.name = "pet#{i}"
       pet
     end
-    @matcher = PetMappingMatcher.new
+    @matcher = PetMappingMatcher.new(@pets_collection)
   end
 
   describe 'timestamps' do
@@ -136,7 +149,7 @@ describe 'Dependent association' do
       it 'sets created_at for document' do
         @owner_mapper.clock = FakeClock.frozen
         @owner_mapper.insert(@owner)
-        FakeClock.frozen.now.should == find_pet_documents[0]['created_at']
+        FakeClock.frozen.now.should == the_only_pet_document['created_at']
       end
 
       it 'ets created_at for domain_object' do
@@ -148,7 +161,7 @@ describe 'Dependent association' do
       it 'sets the same created-at for both domain object and document' do
         @owner_mapper.clock = FakeClock.changes_year
         @owner_mapper.insert(@owner)
-        find_pet_documents[0]['created_at'].should == @pet.created_at
+        the_only_pet_document['created_at'].should == @pet.created_at
       end
     end
 
@@ -160,7 +173,7 @@ describe 'Dependent association' do
 
         @pet.name = 'whatever'
         @owner_mapper.update(@owner)
-        FakeClock.frozen.now.should == find_pet_documents[0]['created_at']
+        FakeClock.frozen.now.should == the_only_pet_document['created_at']
       end
     end
 
@@ -179,7 +192,7 @@ describe 'Dependent association' do
       @owner.add_pet(@pet)
       @owner.add_pet(@pet2)
       @owner_mapper.insert(@owner)
-      @matcher.assert_dependent_persisted([@pet, @pet2], @owner, find_pet_documents)
+      @matcher.assert_dependent_persisted([@pet, @pet2], @owner)
     end
   end
 
@@ -193,7 +206,7 @@ describe 'Dependent association' do
           @owner.add_pet(@pet2)
 
           @owner_mapper.update(@owner)
-          @matcher.assert_dependent_persisted([@pet, @pet2], @owner, find_pet_documents)
+          @matcher.assert_dependent_persisted([@pet, @pet2], @owner)
         end
 
         it 'works if was not empty' do
@@ -202,7 +215,7 @@ describe 'Dependent association' do
 
           @owner.add_pet(@pet2)
           @owner_mapper.update(@owner)
-          @matcher.assert_dependent_persisted([@pet, @pet2], @owner, find_pet_documents)
+          @matcher.assert_dependent_persisted([@pet, @pet2], @owner)
         end
       end
 
@@ -216,7 +229,7 @@ describe 'Dependent association' do
           @owner.remove_pet(pet)
         end
         @owner_mapper.update(@owner)
-        @matcher.assert_dependent_persisted([@pet, @pet3], @owner, find_pet_documents)
+        @matcher.assert_dependent_persisted([@pet, @pet3], @owner)
       end
 
       it 'updates existing' do
@@ -225,7 +238,7 @@ describe 'Dependent association' do
 
         @pet.name = 'new_name'
         @owner_mapper.update(@owner)
-        @matcher.assert_dependent_persisted([@pet], @owner, find_pet_documents)
+        @matcher.assert_dependent_persisted([@pet], @owner)
       end
     end
 

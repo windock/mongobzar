@@ -4,17 +4,17 @@ module Mongobzar
       include RSpec::Matchers::DSL
       include RSpec::Matchers
 
-      def assert_dependent_persisted(domain_objects, parent, collection)
-        domain_objects.size.should == collection.size
+      def assert_correct_dependent_dtos(domain_objects, parent, dtos)
+        domain_objects.size.should == dtos.size
         domain_objects.each_with_index do |domain_object, i|
-          assert_single_dependent_persisted(domain_object, parent, collection[i])
+          assert_correct_dependent_dto(domain_object, parent, dtos[i])
         end
       end
 
-      def assert_persisted(domain_objects, mongo_collection)
-        domain_objects.size.should == mongo_collection.size
+      def assert_correct_dtos_collection(domain_objects, dtos)
+        domain_objects.size.should == dtos.size
         domain_objects.each_with_index do |domain_object, i|
-          assert_single_persisted(domain_object, mongo_collection[i])
+          assert_correct_dto(domain_object, dtos[i])
         end
       end
 

@@ -29,7 +29,20 @@ module Mongobzar
     end
 
     class SimpleObjectMappingMatcher < MappingMatcher
-      def assert_single_persisted(simple_object, dto)
+      def initialize(collection)
+        @collection = collection
+      end
+
+      def find_many_documents
+        @collection.find.to_a
+      end
+
+      def assert_persisted(simple_objects)
+        dtos = find_many_documents
+        assert_correct_dtos_collection(simple_objects, dtos)
+      end
+
+      def assert_correct_dto(simple_object, dto)
         simple_object.id.should == dto['_id']
         simple_object.name.should == dto['name']
         simple_object.description.should == dto['description']
@@ -59,11 +72,7 @@ describe 'CRUD operations' do
     @so2 = SimpleObject.new
     @so2.name = 'desc2'
     @so2.description = 'desc2'
-    @matcher = SimpleObjectMappingMatcher.new
-  end
-
-  def find_simple_object_documents
-    @simple_objects_collection.find.to_a
+    @matcher = SimpleObjectMappingMatcher.new(@simple_objects_collection)
   end
 
   describe 'insert' do
@@ -71,7 +80,7 @@ describe 'CRUD operations' do
       @mapper.insert(@so1)
       @mapper.insert(@so2)
 
-      @matcher.assert_persisted([@so1, @so2], find_simple_object_documents)
+      @matcher.assert_persisted([@so1, @so2])
     end
 
     it 'raises InvalidDomainObject if nil was passed' do
@@ -85,7 +94,7 @@ describe 'CRUD operations' do
 
       @so1.name = 'new_name'
       @mapper.update(@so1)
-      @matcher.assert_persisted([@so1], find_simple_object_documents)
+      @matcher.assert_persisted([@so1])
     end
   end
 
@@ -95,7 +104,7 @@ describe 'CRUD operations' do
       @mapper.insert(@so2)
 
       @mapper.destroy(@so1)
-      @matcher.assert_persisted([@so2], find_simple_object_documents)
+      @matcher.assert_persisted([@so2])
     end
   end
 
