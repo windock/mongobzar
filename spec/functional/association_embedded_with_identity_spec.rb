@@ -26,20 +26,30 @@ module Mongobzar
       end
 
       def build_domain_object!(person, dto)
-        @address_mapper.domain_objects(dto['addresses']).each do |address|
+        @address_mapper.build_domain_objects(dto['addresses']).each do |address|
           person.add_address(address)
         end
-        person.work_address = @address_mapper.build_domain_object(dto['work_address'])
+        person.work_address = @address_mapper.build_domain_object(
+          dto['work_address']
+        )
       end
 
       def build_dto!(dto, person)
-        dto['addresses'] = @address_mapper.build_embedded_collection(person.addresses)
-        dto['work_address'] = @address_mapper.build_embedded_dto(person.work_address)
+        dto['addresses'] = @address_mapper.build_embedded_collection(
+          person.addresses
+        )
+        dto['work_address'] = @address_mapper.build_embedded_dto(
+          person.work_address
+        )
       end
 
       def update_dto!(dto, person)
-        dto['addresses'] = @address_mapper.update_embedded_collection(dto['addresses'], person.addresses)
-        dto['work_address'] = @address_mapper.update_embedded_dto(dto['work_address'], person.work_address)
+        dto['addresses'] = @address_mapper.update_embedded_collection(
+          dto['addresses'], person.addresses
+        )
+        dto['work_address'] = @address_mapper.update_embedded_dto(
+          dto['work_address'], person.work_address
+        )
       end
     end
 
@@ -53,17 +63,13 @@ module Mongobzar
       end
     end
 
-    class AddressWithIdentityMappingMatcher < MappingMatcher
-      def initialize(collection)
-        @collection = collection
-      end
-
+    class AddressWithIdentityMappingMatcher < EmbeddedMappingMatcher
       def find_one_document
-        @collection.find.to_a[0]['work_address']
+        collection.find.to_a[0]['work_address']
       end
 
       def find_many_documents
-        @collection.find.to_a[0]['addresses']
+        collection.find.to_a[0]['addresses']
       end
 
       def assert_single_loaded(specification, address)
@@ -71,10 +77,6 @@ module Mongobzar
         address.id.should_not be_nil
         specification.id.should == address.id
         specification.street.should == address.street
-      end
-
-      def assert_single_persisted(address)
-        assert_correct_dto(address, find_one_document)
       end
 
       def assert_correct_dto(address, dto)
@@ -89,23 +91,6 @@ module Mongobzar
         addresses.each_with_index do |address, i|
           assert_correct_dto(address, dtos[i])
         end
-      end
-
-      def assert_embedded_persisted(addresses)
-        dtos = find_many_documents
-        assert_correct_dtos_collection(addresses, dtos)
-      end
-
-      def assert_embedded_persisted_with_given_id(addresses, given_id)
-        dtos = find_many_documents
-        assert_correct_dtos_collection(addresses, dtos)
-        given_id.should == dtos[0]['_id']
-      end
-
-      def assert_persisted_with_given_id(domain_object, given_id)
-        document = find_one_document
-        assert_correct_dto(domain_object, document)
-        given_id.should == document['_id']
       end
     end
   end
@@ -144,7 +129,7 @@ describe 'Embedded association with identity' do
 
         @work_address.street = 'New street'
         @person_mapper.update(@person)
-        @matcher.assert_persisted_with_given_id(@work_address, work_address_original_id)
+        @matcher.assert_single_persisted_with_given_id(@work_address, work_address_original_id)
       end
     end
 
@@ -162,7 +147,7 @@ describe 'Embedded association with identity' do
 
   describe 'many' do
     before do
-      @address1 = AddressWithId.new('street1')
+      @address = AddressWithId.new('street')
       @address2 = AddressWithId.new('street2')
       @address3 = AddressWithId.new('street3')
       @address4 = AddressWithId.new('street4')
@@ -170,10 +155,10 @@ describe 'Embedded association with identity' do
 
     describe 'insert' do
       it 'puts embedded documents to the parent document' do
-        @person.add_address(@address1)
+        @person.add_address(@address)
         @person.add_address(@address2)
         @person_mapper.insert(@person)
-        @matcher.assert_embedded_persisted([@address1, @address2])
+        @matcher.assert_persisted([@address, @address2])
       end
     end
 
@@ -182,58 +167,58 @@ describe 'Embedded association with identity' do
         describe 'creates new' do
           it 'works if was empty' do
             @person_mapper.insert(@person)
-            @person.add_address(@address1)
+            @person.add_address(@address)
             @person.add_address(@address2)
             @person_mapper.update(@person)
-            @matcher.assert_embedded_persisted([@address1, @address2])
+            @matcher.assert_persisted([@address, @address2])
           end
 
           it 'works if was not empty, preserving ids' do
-            @person.add_address(@address1)
+            @person.add_address(@address)
             @person_mapper.insert(@person)
-            address1_original_id = @address1.id
+            address_original_id = @address.id
 
             @person.add_address(@address2)
             @person_mapper.update(@person)
 
-            @matcher.assert_embedded_persisted_with_given_id(
-              [@address1, @address2], address1_original_id)
+            @matcher.assert_persisted([@address, @address2])
+            @matcher.assert_the_same_id(@address, address_original_id)
           end
         end
 
         it 'deletes removed' do
-          [@address1, @address2, @address3, @address4].each do |address|
+          [@address, @address2, @address3, @address4].each do |address|
             @person.add_address(address)
           end
           @person_mapper.insert(@person)
-          @person.remove_address(@address1)
+          @person.remove_address(@address)
           @person.remove_address(@address3)
           @person_mapper.update(@person)
 
-          @matcher.assert_embedded_persisted([@address2, @address4])
+          @matcher.assert_persisted([@address2, @address4])
         end
 
         it 'updates existing, preserving ids' do
-          @person.add_address(@address1)
+          @person.add_address(@address)
           @person_mapper.insert(@person)
-          original_id = @address1.id
+          original_id = @address.id
 
-          @address1.street = 'new_street'
+          @address.street = 'new_street'
           @person_mapper.update(@person)
 
-          @matcher.assert_embedded_persisted_with_given_id(
-            [@address1], original_id)
+          @matcher.assert_persisted([@address])
+          @matcher.assert_the_same_id(@address, original_id)
         end
       end
     end
 
     describe 'find' do
       it 'returns domain object with related domain objects' do
-        @person.add_address(@address1)
+        @person.add_address(@address)
         @person.add_address(@address2)
         @person_mapper.insert(@person)
 
-        @matcher.assert_loaded([@address1, @address2], @person_mapper.find(@person.id).addresses)
+        @matcher.assert_loaded([@address, @address2], @person_mapper.find(@person.id).addresses)
       end
     end
   end

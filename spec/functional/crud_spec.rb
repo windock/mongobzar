@@ -33,13 +33,8 @@ module Mongobzar
         @collection = collection
       end
 
-      def find_many_documents
-        @collection.find.to_a
-      end
-
       def assert_persisted(simple_objects)
-        dtos = find_many_documents
-        assert_correct_dtos_collection(simple_objects, dtos)
+        assert_correct_dtos_collection(simple_objects, @collection.find.to_a)
       end
 
       def assert_correct_dto(simple_object, dto)
@@ -137,5 +132,9 @@ describe 'CRUD operations' do
     it 'raises DocumentNotFound if document with such id was not found' do
       expect { @mapper.find(BSON::ObjectId.new) }.to raise_error(Mongobzar::Mapping::DocumentNotFound)
     end
+  end
+
+  it 'has no duplication with DependentMapper about collection management' do
+    pending
   end
 end

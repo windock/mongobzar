@@ -92,13 +92,8 @@ module Mongobzar
         @collection = collection
       end
 
-      def find_many_documents
-        @collection.find.to_a
-      end
-
       def assert_dependent_persisted(pets, owner)
-        dtos = find_many_documents
-        assert_correct_dependent_dtos(pets, owner, dtos)
+        assert_correct_dependent_dtos(pets, owner, @collection.find.to_a)
       end
 
       def assert_correct_dependent_dto(pet, owner, pet_dto)

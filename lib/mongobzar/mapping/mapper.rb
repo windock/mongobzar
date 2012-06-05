@@ -1,9 +1,10 @@
 require 'mongo'
 require_relative 'document_not_found'
+require_relative 'base_mapper_with_identity'
 
 module Mongobzar
   module Mapping
-    class Mapper
+    class Mapper < BaseMapperWithIdentity
       def initialize(database_name)
         @connection = Mongo::Connection.new
         @db = @connection.db(database_name)
@@ -20,16 +21,6 @@ module Mongobzar
         build_domain_object(find_dto(id))
       end
 
-      def build_domain_object(dto)
-        domain_object = build_new(dto)
-        domain_object.id = dto['_id']
-        build_domain_object!(domain_object, dto)
-        domain_object
-      end
-
-      def build_domain_object!(domain_object, dto)
-      end
-
       def find_dto(id)
         if id.kind_of?(String)
           id = BSON::ObjectId.from_string(id)
@@ -41,16 +32,6 @@ module Mongobzar
 
       def insert_dto(dto)
         mongo_collection.insert(dto)
-      end
-
-      def build_dto(domain_object)
-        dto = {}
-        dto['_id'] = BSON::ObjectId.new
-        build_dto!(dto, domain_object)
-        dto
-      end
-
-      def build_dto!(dto, domain_object)
       end
 
       def insert(domain_object)
@@ -68,10 +49,6 @@ module Mongobzar
         dto = find_dto(domain_object.id)
         update_dto!(dto, domain_object)
         mongo_collection.update({'_id' => dto['_id']}, dto)
-      end
-
-      def update_dto!(dto, domain_object)
-        build_dto!(dto, domain_object)
       end
 
       def destroy(domain_object)

@@ -1,20 +1,8 @@
+require_relative 'base_mapper_with_identity'
+
 module Mongobzar
   module Mapping
-    class EmbeddedWithIdentityMapper
-      def build_dto(domain_object)
-        dto = {}
-        dto['_id'] = BSON::ObjectId.new
-        build_dto!(dto, domain_object)
-        dto
-      end
-
-      def build_dto!(dto, domain_object)
-      end
-
-      def update_dto!(dto, domain_object)
-        build_dto!(dto, domain_object)
-      end
-
+    class EmbeddedWithIdentityMapper < BaseMapperWithIdentity
       def build_embedded_dto(domain_object)
         return nil unless domain_object
         dto = build_dto(domain_object)
@@ -53,7 +41,7 @@ module Mongobzar
         domain_object.id = dto['_id']
       end
 
-      def domain_objects(dtos)
+      def build_domain_objects(dtos)
         mapped_collection = build_mapped_collection
         mapped_collection.load_dtos(dtos)
         mapped_collection.domain_objects
