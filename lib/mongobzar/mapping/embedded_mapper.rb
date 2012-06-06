@@ -2,7 +2,9 @@ require_relative 'base_mapper'
 
 module Mongobzar
   module Mapping
-    class EmbeddedMapper < BaseMapper
+    class EmbeddedMapper
+      include BaseMapper
+
       def build_embedded_dto(domain_object)
         return nil unless domain_object
         build_dto(domain_object)

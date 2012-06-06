@@ -1,6 +1,9 @@
 module Mongobzar
   module Mapping
-    class BaseMapper
+    module BaseMapper
+      def initialize(*args)
+      end
+
       def build_dto(domain_object)
         dto = {}
         build_dto!(dto, domain_object)

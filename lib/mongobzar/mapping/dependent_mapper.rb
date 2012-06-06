@@ -1,20 +1,22 @@
 require_relative 'mapped_collection'
-require_relative 'base_mapper_with_identity'
+require_relative 'base_mapper'
+require_relative 'has_identity'
+require_relative 'persists_to_collection'
+require_relative 'dependent_with_identity'
 
 module Mongobzar
   module Mapping
-    class DependentMapper < BaseMapperWithIdentity
-      def initialize(database_name)
-        @connection = Mongo::Connection.new
-        @db = @connection.db(database_name)
-      end
+    class DependentMapper
+      include BaseMapper
+      include HasIdentity
+      include PersistsToCollection
+      include DependentWithIdentity
+
       attr_accessor :foreign_key
 
       def insert_dependent_collection(parent, domain_objects)
-        mapped_collection = build_mapped_collection
-        mapped_collection.load_domain_objects(domain_objects)
-        dict = mapped_collection.dict
-        dtos = dict.values
+        dict, dtos = build_dtos_collection(domain_objects)
+
         dtos.each do |dto|
           link_dto!(dto, parent)
         end
@@ -32,12 +34,9 @@ module Mongobzar
       end
 
       def update_dependent_collection(parent, domain_objects)
-        mapped_collection = build_mapped_collection
         dtos = dependent_dtos_cursor(parent).to_a
+        dict = update_dtos_collection(dtos, domain_objects)
 
-        mapped_collection.load_dtos(dtos)
-        mapped_collection.update(domain_objects)
-        dict = mapped_collection.dict
         dtos = dict.values
         dtos.each do |dto|
           link_dto!(dto, parent)
@@ -57,26 +56,10 @@ module Mongobzar
       end
       private :update_domain_object_after_update
 
-      def link_domain_object(domain_object, dto)
-        domain_object.id = dto['_id']
-      end
-      private :link_domain_object
-
       def find_dependent_collection(parent)
-        mapped_collection = build_mapped_collection
         dtos = dependent_dtos_cursor(parent)
-        mapped_collection.load_dtos(dtos)
-        mapped_collection.domain_objects
+        build_domain_objects(dtos)
       end
-
-      def build_mapped_collection
-        MappedCollection.new(self)
-      end
-
-      def set_mongo_collection(name)
-        @mongo_collection = @db.collection(name, safe: true)
-      end
-      protected :set_mongo_collection
 
       def link_dto!(dto, owner_domain_object)
         dto[foreign_key] = owner_domain_object.id
@@ -91,12 +74,6 @@ module Mongobzar
         mongo_collection.remove(foreign_key => domain_object.id)
       end
 
-      def clear_everything!
-        mongo_collection.remove
-      end
-
-      protected
-        attr_reader :mongo_collection
     end
   end
 end

@@ -1,14 +1,15 @@
 require 'mongo'
 require_relative 'document_not_found'
-require_relative 'base_mapper_with_identity'
+require_relative 'base_mapper'
+require_relative 'has_identity'
+require_relative 'persists_to_collection'
 
 module Mongobzar
   module Mapping
-    class Mapper < BaseMapperWithIdentity
-      def initialize(database_name)
-        @connection = Mongo::Connection.new
-        @db = @connection.db(database_name)
-      end
+    class Mapper
+      include BaseMapper
+      include HasIdentity
+      include PersistsToCollection
 
       def all
         dtos = mongo_collection.find
@@ -54,20 +55,6 @@ module Mongobzar
       def destroy(domain_object)
         mongo_collection.remove({ _id: domain_object.id })
       end
-
-      def set_mongo_collection(name)
-        @mongo_collection = @db.collection(name, safe: true)
-      end
-      protected :set_mongo_collection
-
-      def clear_everything!
-        mongo_collection.remove
-      end
-
-      protected
-        attr_reader :connection
-        attr_reader :db
-        attr_reader :mongo_collection
     end
   end
 end
