@@ -1,14 +1,20 @@
 module Mongobzar
   module Mapping
     module HasIdentity
+      def initialize(*args)
+        @id_generator = BSONIdGenerator.new
+      end
+
       def build_dto(domain_object)
         dto = super
         add_identity_to_dto!(dto)
         dto
       end
 
+      attr_accessor :id_generator
+
       def add_identity_to_dto!(dto)
-        dto['_id'] = BSON::ObjectId.new
+        dto['_id'] = @id_generator.next_id
       end
 
       #TODO: add build_domain_object!(domain_object, dto)

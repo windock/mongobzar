@@ -10,6 +10,7 @@ module Mongobzar
     class SimpleObjectMapper < Mongobzar::Mapping::Mapper
       def initialize(database_name)
         super
+        #TODO: make a template method with collection name
         set_mongo_collection('simple_objects')
       end
 
@@ -70,12 +71,34 @@ describe 'CRUD operations' do
     @matcher = SimpleObjectMappingMatcher.new(@simple_objects_collection)
   end
 
+  describe 'basic setup' do
+    it 'shows informative error message if collection name is not provided' do
+      pending
+      class MapperWithoutCollection < Mongobzar::Mapping::Mapper
+      end
+
+      mapper = MapperWithoutCollection.new('any_database_name')
+      assert_raises(SomeInformativeException) do
+        mapper.insert(stub)
+      end
+    end
+  end
+
   describe 'insert' do
     it 'puts documents to mongo collection' do
       @mapper.insert(@so1)
       @mapper.insert(@so2)
 
       @matcher.assert_persisted([@so1, @so2])
+    end
+
+    it 'uses IdGenerator to set ids' do
+      sample_id = 'some_id'
+      @mapper.id_generator = stub(next_id: 'some_id')
+      @mapper.insert(@so1)
+
+      @so1.id.should == sample_id
+      @simple_objects_collection.find.to_a[0]['_id'].should == sample_id
     end
 
     it 'raises InvalidDomainObject if nil was passed' do
