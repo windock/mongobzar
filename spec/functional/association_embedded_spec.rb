@@ -16,8 +16,11 @@ module Mongobzar
     class PersonMapper < Mongobzar::Mapping::Mapper
       def initialize(database_name)
         super
-        set_mongo_collection('people')
         @address_mapper = AddressMapper.new
+      end
+
+      def mongo_collection_name
+        'people'
       end
 
       def build_dto!(dto, person)

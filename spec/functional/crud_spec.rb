@@ -8,10 +8,8 @@ module Mongobzar
     end
 
     class SimpleObjectMapper < Mongobzar::Mapping::Mapper
-      def initialize(database_name)
-        super
-        #TODO: make a template method with collection name
-        set_mongo_collection('simple_objects')
+      def mongo_collection_name
+        'simple_objects'
       end
 
       def build_new(dto={})
@@ -75,11 +73,23 @@ describe 'CRUD operations' do
     it 'shows informative error message if collection name is not provided' do
       pending
       class MapperWithoutCollection < Mongobzar::Mapping::Mapper
+        def build_new(dto={})
+        end
       end
 
       mapper = MapperWithoutCollection.new('any_database_name')
-      assert_raises(SomeInformativeException) do
+      assert_raises('you should set mongo collection') do
         mapper.insert(stub)
+      end
+    end
+
+    it 'shows informative error message if build_new does not return object' do
+      pending
+      class MapperWithWrongBuildNew < Mongobzar::Mapping::Mapper
+      end
+
+      mapper = MapperWithWrongBuildNew.new('any_database_name')
+      assert_raises('build_new should return object with :id= method') do
       end
     end
   end

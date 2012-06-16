@@ -17,8 +17,11 @@ module Mongobzar
     class PersonHavingAddressesWithIdMapper < Mongobzar::Mapping::Mapper
       def initialize(database_name)
         super
-        set_mongo_collection('people_having_addresses_with_id')
         @address_mapper = AddressWithIdMapper.new
+      end
+
+      def mongo_collection_name
+        'people_having_addresses_with_id'
       end
 
       def build_new(dto={})

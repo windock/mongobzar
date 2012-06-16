@@ -1,3 +1,5 @@
+require_relative '../bson_id_generator'
+
 module Mongobzar
   module Mapping
     module HasIdentity

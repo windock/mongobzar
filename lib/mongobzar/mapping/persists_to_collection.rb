@@ -5,6 +5,7 @@ module Mongobzar
         super
         @connection = Mongo::Connection.new
         @db = @connection.db(database_name)
+        @mongo_collection = @db.collection(mongo_collection_name, safe: true)
       end
 
       def clear_everything!
@@ -13,10 +14,6 @@ module Mongobzar
 
       protected
         attr_reader :mongo_collection
-
-        def set_mongo_collection(name)
-          @mongo_collection = @db.collection(name, safe: true)
-        end
     end
   end
 end

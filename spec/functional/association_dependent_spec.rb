@@ -29,9 +29,12 @@ module Mongobzar
     class OwnerMapper < Mongobzar::Mapping::Mapper
       def initialize(database_name)
         super
-        set_mongo_collection('owners')
         @clock = Time
         @pet_mapper = PetMapper.new(database_name)
+      end
+
+      def mongo_collection_name
+        'owners'
       end
 
       attr_reader :clock
@@ -70,8 +73,11 @@ module Mongobzar
 
       def initialize(database_name)
         super
-        set_mongo_collection('pets')
         self.foreign_key = 'owner_id'
+      end
+
+      def mongo_collection_name
+        'pets'
       end
 
       def build_new(dto={})

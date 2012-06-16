@@ -11,9 +11,8 @@ module Mongobzar
     class TimestampedObjectMapper < Mongobzar::Mapping::Mapper
       include Mongobzar::Mapping::HasCreatedAt
 
-      def initialize(database_name)
-        super
-        set_mongo_collection('timestamped_objects')
+      def mongo_collection_name
+        'timestamped_objects'
       end
 
       def build_new(dto)
