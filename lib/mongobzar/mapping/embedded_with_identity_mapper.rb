@@ -16,7 +16,7 @@ module Mongobzar
         dto
       end
 
-      def update_embedded_dto(dto, domain_object)
+      def update_dto(dto, domain_object)
         return nil unless domain_object
         update_dto!(dto, domain_object)
         dto

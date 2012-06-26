@@ -50,7 +50,7 @@ module Mongobzar
         dto['addresses'] = @address_mapper.update_embedded_collection(
           dto['addresses'], person.addresses
         )
-        dto['work_address'] = @address_mapper.update_embedded_dto(
+        dto['work_address'] = @address_mapper.update_dto(
           dto['work_address'], person.work_address
         )
       end
