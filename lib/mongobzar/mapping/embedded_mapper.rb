@@ -15,6 +15,9 @@ module Mongobzar
         domain_object = build_new(dto)
       end
 
+      #TODO:
+      # add build_domain_object! for consistency
+
       def build_embedded_collection(domain_objects)
         dtos = []
         domain_objects.each do |domain_object|
