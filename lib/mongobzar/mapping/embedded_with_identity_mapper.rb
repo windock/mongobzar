@@ -9,9 +9,9 @@ module Mongobzar
       include HasIdentity
       include DependentWithIdentity
 
-      def build_embedded_dto(domain_object)
+      def build_dto(domain_object)
         return nil unless domain_object
-        dto = build_dto(domain_object)
+        dto = super
         domain_object.id = dto['_id']
         dto
       end

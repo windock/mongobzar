@@ -5,9 +5,9 @@ module Mongobzar
     class EmbeddedMapper
       include BaseMapper
 
-      def build_embedded_dto(domain_object)
+      def build_dto(domain_object)
         return nil unless domain_object
-        build_dto(domain_object)
+        super
       end
 
       def build_domain_object(dto)
@@ -23,7 +23,7 @@ module Mongobzar
       def build_embedded_collection(domain_objects)
         dtos = []
         domain_objects.each do |domain_object|
-          dtos << build_embedded_dto(domain_object)
+          dtos << build_dto(domain_object)
         end
         dtos
       end
