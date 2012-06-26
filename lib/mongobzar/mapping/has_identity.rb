@@ -19,8 +19,6 @@ module Mongobzar
         dto['_id'] = @id_generator.next_id
       end
 
-      #TODO: add build_domain_object!(domain_object, dto)
-      #for cases, where not everything may be done in constructor
       def build_domain_object(dto)
         return nil unless dto
         domain_object = build_new(dto)
