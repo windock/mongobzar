@@ -13,6 +13,11 @@ module Mongobzar
       def build_domain_object(dto)
         return nil unless dto
         domain_object = build_new(dto)
+        build_domain_object!(domain_object, dto)
+        domain_object
+      end
+
+      def build_domain_object!(domain_object, dto)
       end
 
       #TODO:
