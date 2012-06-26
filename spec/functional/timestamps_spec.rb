@@ -15,8 +15,16 @@ module Mongobzar
         'timestamped_objects'
       end
 
+      def mapping_strategy
+        Class.new do
+          def build_new(dto)
+            TimestampedObject.new
+          end
+        end.new
+      end
+
       def build_new(dto)
-        TimestampedObject.new
+        mapping_strategy.build_new(dto)
       end
     end
   end

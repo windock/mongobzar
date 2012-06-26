@@ -5,11 +5,6 @@ module Mongobzar
     class EmbeddedMapper
       include BaseMapper
 
-      def build_dto(domain_object)
-        return nil unless domain_object
-        super
-      end
-
       def build_domain_object(dto)
         return nil unless dto
         domain_object = build_new(dto)

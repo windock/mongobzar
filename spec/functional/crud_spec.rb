@@ -7,15 +7,9 @@ module Mongobzar
       attr_accessor :id, :name, :description
     end
 
-    class SimpleObjectMapper < Mongobzar::Mapping::Mapper
-      def mongo_collection_name
-        'simple_objects'
-      end
+    class MappingStrategy; end
 
-      def build_new(dto={})
-        SimpleObject.new
-      end
-
+    class SimpleObjectMappingStrategy < MappingStrategy
       def build_domain_object!(simple_object, dto)
         simple_object.name = dto['name']
         simple_object.description = dto['description']
@@ -24,6 +18,28 @@ module Mongobzar
       def build_dto!(dto, simple_object)
         dto['name'] = simple_object.name
         dto['description'] = simple_object.description
+      end
+    end
+
+    class SimpleObjectMapper < Mongobzar::Mapping::Mapper
+      def mongo_collection_name
+        'simple_objects'
+      end
+
+      def mapping_strategy
+        SimpleObjectMappingStrategy.new
+      end
+
+      def build_new(dto={})
+        SimpleObject.new
+      end
+
+      def build_domain_object!(simple_object, dto)
+        mapping_strategy.build_domain_object!(simple_object, dto)
+      end
+
+      def build_dto!(dto, simple_object)
+        mapping_strategy.build_dto!(dto, simple_object)
       end
     end
 

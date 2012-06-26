@@ -14,18 +14,9 @@ module Mongobzar
       end
     end
 
-    class PersonHavingAddressesWithIdMapper < Mongobzar::Mapping::Mapper
-      def initialize(database_name)
-        super
-        @address_mapper = AddressWithIdMapper.new
-      end
-
-      def mongo_collection_name
-        'people_having_addresses_with_id'
-      end
-
-      def build_new(dto={})
-        Person.new
+    class PersonHavingAddressesWithIdMappingStrategy
+      def initialize(address_mapper)
+        @address_mapper = address_mapper
       end
 
       def build_domain_object!(person, dto)
@@ -56,13 +47,52 @@ module Mongobzar
       end
     end
 
+    class PersonHavingAddressesWithIdMapper < Mongobzar::Mapping::Mapper
+      def initialize(database_name)
+        super
+        @address_mapper = AddressWithIdMapper.new
+      end
+
+      def mongo_collection_name
+        'people_having_addresses_with_id'
+      end
+
+      def build_new(dto={})
+        Person.new
+      end
+
+      def mapping_strategy
+        PersonHavingAddressesWithIdMappingStrategy.new(@address_mapper)
+      end
+
+      def build_domain_object!(person, dto)
+        mapping_strategy.build_domain_object!(person, dto)
+      end
+
+      def build_dto!(dto, person)
+        mapping_strategy.build_dto!(dto, person)
+      end
+
+      def update_dto!(dto, person)
+        mapping_strategy.update_dto!(dto, person)
+      end
+    end
+
     class AddressWithIdMapper < Mongobzar::Mapping::EmbeddedWithIdentityMapper
       def build_dto!(dto, address)
         dto['street'] = address.street
       end
 
+      def mapping_strategy
+        Class.new do
+          def build_new(dto)
+            AddressWithId.new(dto['street'])
+          end
+        end.new
+      end
+
       def build_new(dto={})
-        AddressWithId.new(dto['street'])
+        mapping_strategy.build_new(dto)
       end
     end
 

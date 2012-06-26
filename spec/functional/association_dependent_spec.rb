@@ -26,6 +26,22 @@ module Mongobzar
       attr_accessor :id, :name, :created_at
     end
 
+    class OwnerMappingStrategy
+      def initialize(pet_mapper)
+        @pet_mapper = pet_mapper
+      end
+
+      def build_new(dto)
+        Owner.new
+      end
+
+      def build_domain_object!(owner, dto)
+        @pet_mapper.find_dependent_collection(owner).each do |pet|
+          owner.add_pet(pet)
+        end
+      end
+    end
+
     class OwnerMapper < Mongobzar::Mapping::Mapper
       def initialize(database_name)
         super
@@ -42,14 +58,16 @@ module Mongobzar
         @clock = @pet_mapper.clock = clock
       end
 
-      def build_new(dto={})
-        Owner.new
+      def mapping_strategy
+        OwnerMappingStrategy.new(@pet_mapper)
+      end
+
+      def build_new(dto)
+        mapping_strategy.build_new(dto)
       end
 
       def build_domain_object!(owner, dto)
-        @pet_mapper.find_dependent_collection(owner).each do |pet|
-          owner.add_pet(pet)
-        end
+        mapping_strategy.build_domain_object!(owner, dto)
       end
 
       def insert(owner)
@@ -68,6 +86,20 @@ module Mongobzar
       end
     end
 
+    class PetMappingStrategy
+      def build_new(dto={})
+        Pet.new
+      end
+
+      def build_domain_object!(pet, pet_dto)
+        pet.name = pet_dto['name']
+      end
+
+      def build_dto!(dto, pet)
+        dto['name'] = pet.name
+      end
+    end
+
     class PetMapper < Mongobzar::Mapping::DependentMapper
       include Mongobzar::Mapping::HasCreatedAt
 
@@ -80,16 +112,20 @@ module Mongobzar
         'pets'
       end
 
+      def mapping_strategy
+        PetMappingStrategy.new
+      end
+
       def build_new(dto={})
-        Pet.new
+        mapping_strategy.build_new(dto)
       end
 
       def build_domain_object!(pet, pet_dto)
-        pet.name = pet_dto['name']
+        mapping_strategy.build_domain_object!(pet, pet_dto)
       end
 
       def build_dto!(dto, pet)
-        dto['name'] = pet.name
+        mapping_strategy.build_dto!(dto, pet)
       end
     end
 
