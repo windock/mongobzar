@@ -22,7 +22,7 @@ module Mongobzar
         dto
       end
 
-      def build_embedded_collection(domain_objects)
+      def build_dtos(domain_objects)
         dict, dtos = build_dtos_collection(domain_objects)
         dict.each do |domain_object, dto|
           link_domain_object(domain_object, dto)

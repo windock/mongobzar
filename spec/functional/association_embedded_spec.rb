@@ -25,7 +25,7 @@ module Mongobzar
 
       def build_dto!(dto, person)
         dto['work_address'] = @address_mapper.build_dto(person.work_address)
-        dto['addresses'] = @address_mapper.build_embedded_collection(
+        dto['addresses'] = @address_mapper.build_dtos(
           person.addresses
         )
       end
