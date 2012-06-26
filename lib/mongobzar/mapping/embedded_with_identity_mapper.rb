@@ -30,7 +30,7 @@ module Mongobzar
         dict.values
       end
 
-      def update_embedded_collection(dtos, domain_objects)
+      def update_dtos(dtos, domain_objects)
         dict = update_dtos_collection(dtos, domain_objects)
         dict.each do |domain_object, dto|
           link_domain_object(domain_object, dto)

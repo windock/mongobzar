@@ -47,7 +47,7 @@ module Mongobzar
       end
 
       def update_dto!(dto, person)
-        dto['addresses'] = @address_mapper.update_embedded_collection(
+        dto['addresses'] = @address_mapper.update_dtos(
           dto['addresses'], person.addresses
         )
         dto['work_address'] = @address_mapper.update_dto(
