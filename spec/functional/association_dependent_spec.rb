@@ -1,7 +1,6 @@
 require_relative 'spec_helper'
 require_relative '../../lib/mongobzar/mapping/mapper'
 require_relative '../../lib/mongobzar/mapping/dependent_mapper'
-require_relative '../../lib/mongobzar/mapping/has_created_at'
 require_relative '../../lib/mongobzar/mapping/mapping_strategy'
 require_relative '../../lib/mongobzar/mapping/with_identity_mapping_strategy'
 
@@ -95,8 +94,6 @@ module Mongobzar
     end
 
     class PetMapper < Mongobzar::Mapping::DependentMapper
-      include Mongobzar::Mapping::HasCreatedAt
-
       def initialize(database_name)
         super
         self.foreign_key = 'owner_id'
@@ -157,53 +154,6 @@ describe 'Dependent association' do
       pet
     end
     @matcher = PetMappingMatcher.new(@pets_collection)
-  end
-
-  describe 'timestamps' do
-    before do
-      @owner.add_pet(@pet)
-    end
-
-    describe 'on insert' do
-      it 'sets created_at for document' do
-        @owner_mapper.clock = FakeClock.frozen
-        @owner_mapper.insert(@owner)
-        FakeClock.frozen.now.should == the_only_pet_document['created_at']
-      end
-
-      it 'ets created_at for domain_object' do
-        @owner_mapper.clock = FakeClock.frozen
-        @owner_mapper.insert(@owner)
-        FakeClock.frozen.now.should == @pet.created_at
-      end
-
-      it 'sets the same created-at for both domain object and document' do
-        @owner_mapper.clock = FakeClock.changes_year
-        @owner_mapper.insert(@owner)
-        the_only_pet_document['created_at'].should == @pet.created_at
-      end
-    end
-
-    describe 'on update' do
-      it 'doesn\'t change created_at' do
-        @owner_mapper.clock = FakeClock.frozen
-        @owner_mapper.insert(@owner)
-        @owner_mapper.clock = FakeClock.different_frozen
-
-        @pet.name = 'whatever'
-        @owner_mapper.update(@owner)
-        FakeClock.frozen.now.should == the_only_pet_document['created_at']
-      end
-    end
-
-    describe 'on find' do
-      it 'sets created_at for domain object' do
-        @owner_mapper.clock = FakeClock.frozen
-        @owner_mapper.insert(@owner)
-
-        FakeClock.frozen.now.should == @owner_mapper.find(@owner.id).pets[0].created_at
-      end
-    end
   end
 
   describe 'insert' do
