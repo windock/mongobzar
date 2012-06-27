@@ -21,7 +21,7 @@ class TestDomainObject
   end
 end
 
-class TestDomainObjectMapper
+class TestDomainObjectMappingStrategy
   def initialize(id_generator)
     @id_generator = id_generator
   end
@@ -82,8 +82,8 @@ describe Mongobzar::Mapping::MappedCollection do
     @dto2 = { '_id' => 2, 'name' => 'd2' }
     @dto3 = { '_id' => 3, 'name' => 'd3' }
 
-    @mapper = TestDomainObjectMapper.new(@id_generator)
-    @mc = Mongobzar::Mapping::MappedCollection.new(@mapper)
+    @mc = Mongobzar::Mapping::MappedCollection.new(
+      TestDomainObjectMappingStrategy.new(@id_generator))
   end
 
 
