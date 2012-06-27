@@ -64,10 +64,6 @@ module Mongobzar
         OwnerMappingStrategy.new(@pet_mapper)
       end
 
-      def build_domain_object!(owner, dto)
-        mapping_strategy.build_domain_object!(owner, dto)
-      end
-
       def insert(owner)
         super
         @pet_mapper.insert_dependent_collection(owner, owner.pets)
@@ -112,10 +108,6 @@ module Mongobzar
 
       def mapping_strategy
         PetMappingStrategy.new
-      end
-
-      def build_domain_object!(pet, pet_dto)
-        mapping_strategy.build_domain_object!(pet, pet_dto)
       end
     end
 

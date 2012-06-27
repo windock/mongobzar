@@ -27,9 +27,6 @@ module Mongobzar
         domain_object
       end
 
-      def build_domain_object!(domain_object, dto)
-      end
-
       protected
         def link_domain_object(domain_object, dto)
           domain_object.id = dto['_id']

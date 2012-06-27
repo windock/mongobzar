@@ -46,10 +46,6 @@ module Mongobzar
       def mapping_strategy
         PersonMappingStrategy.new(AddressMapper.new)
       end
-
-      def build_domain_object!(person, dto)
-        mapping_strategy.build_domain_object!(person, dto)
-      end
     end
 
     class AddressMapperMappingStrategy < Mapping::MappingStrategy
