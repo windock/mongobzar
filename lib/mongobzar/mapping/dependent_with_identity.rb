@@ -25,7 +25,7 @@ module Mongobzar
 
       private
         def build_mapped_collection
-          MappedCollection.new(self)
+          MappedCollection.new(mapping_strategy)
         end
     end
   end
