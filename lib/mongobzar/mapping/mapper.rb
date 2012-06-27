@@ -11,14 +11,6 @@ module Mongobzar
       include HasIdentity
       include PersistsToCollection
 
-      def build_domain_object(dto)
-        mapping_strategy.build_domain_object(dto)
-      end
-
-      def build_domain_object!(domain_object, dto)
-        mapping_strategy.build_domain_object!(dto)
-      end
-
       def all
         dtos = mongo_collection.find
         dtos.map do |dto|

@@ -9,10 +9,6 @@ module Mongobzar
       include BaseMapper
       include DependentWithIdentity
 
-      def build_domain_object(dto)
-        mapping_strategy.build_domain_object(dto)
-      end
-
       def build_dtos(domain_objects)
         dict, dtos = build_dtos_collection(domain_objects)
         dict.each do |domain_object, dto|
