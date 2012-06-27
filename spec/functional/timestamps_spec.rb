@@ -22,10 +22,6 @@ module Mongobzar
           end
         end.new
       end
-
-      def build_new(dto)
-        mapping_strategy.build_new(dto)
-      end
     end
   end
 end

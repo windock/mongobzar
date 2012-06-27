@@ -6,10 +6,6 @@ module Mongobzar
     class EmbeddedMapper
       include BaseMapper
 
-      def build_domain_object(dto)
-        mapping_strategy.build_domain_object(dto)
-      end
-
       def mapping_strategy
         MappingStrategy.new
       end

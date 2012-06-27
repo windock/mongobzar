@@ -32,16 +32,8 @@ module Mongobzar
         SimpleObjectMappingStrategy.new
       end
 
-      def build_new(dto={})
-        mapping_strategy.build_new(dto)
-      end
-
       def build_domain_object!(simple_object, dto)
         mapping_strategy.build_domain_object!(simple_object, dto)
-      end
-
-      def build_dto!(dto, simple_object)
-        mapping_strategy.build_dto!(dto, simple_object)
       end
     end
 

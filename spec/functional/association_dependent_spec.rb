@@ -64,10 +64,6 @@ module Mongobzar
         OwnerMappingStrategy.new(@pet_mapper)
       end
 
-      def build_new(dto)
-        mapping_strategy.build_new(dto)
-      end
-
       def build_domain_object!(owner, dto)
         mapping_strategy.build_domain_object!(owner, dto)
       end
@@ -118,16 +114,8 @@ module Mongobzar
         PetMappingStrategy.new
       end
 
-      def build_new(dto={})
-        mapping_strategy.build_new(dto)
-      end
-
       def build_domain_object!(pet, pet_dto)
         mapping_strategy.build_domain_object!(pet, pet_dto)
-      end
-
-      def build_dto!(dto, pet)
-        mapping_strategy.build_dto!(dto, pet)
       end
     end
 
