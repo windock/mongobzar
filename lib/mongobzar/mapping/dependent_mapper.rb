@@ -8,7 +8,6 @@ module Mongobzar
   module Mapping
     class DependentMapper
       include BaseMapper
-      include HasIdentity
       include PersistsToCollection
       include DependentWithIdentity
 
@@ -30,7 +29,7 @@ module Mongobzar
       end
 
       def update_domain_object_after_insert(domain_object, dto)
-        link_domain_object(domain_object, dto)
+        mapping_strategy.link_domain_object(domain_object, dto)
       end
 
       def update_dependent_collection(parent, domain_objects)
@@ -52,7 +51,7 @@ module Mongobzar
       end
 
       def update_domain_object_after_update(domain_object, dto)
-        link_domain_object(domain_object, dto)
+        mapping_strategy.link_domain_object(domain_object, dto)
       end
       private :update_domain_object_after_update
 

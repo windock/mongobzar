@@ -80,7 +80,7 @@ module Mongobzar
       end
     end
 
-    class PetMappingStrategy < Mapping::MappingStrategy
+    class PetMappingStrategy < Mapping::WithIdentityMappingStrategy
       def build_new(dto={})
         Pet.new
       end
