@@ -21,6 +21,12 @@ module Mongobzar
       def build_dto!(dto, domain_object)
       end
 
+      def update_dto(dto, domain_object)
+        return nil unless domain_object
+        update_dto!(dto, domain_object)
+        dto
+      end
+
       def update_dto!(dto, domain_object)
         build_dto!(dto, domain_object)
       end
