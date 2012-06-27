@@ -16,7 +16,7 @@ module Mongobzar
       end
 
       def mapping_strategy
-        Class.new do
+        Class.new(Mapping::MappingStrategy) do
           def build_new(dto)
             TimestampedObject.new
           end

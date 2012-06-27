@@ -2,6 +2,7 @@ require_relative 'spec_helper'
 require_relative '../test/person'
 require_relative '../../lib/mongobzar/mapping/mapper'
 require_relative '../../lib/mongobzar/mapping/embedded_mapper'
+require_relative '../../lib/mongobzar/mapping/mapping_strategy'
 
 module Mongobzar
   module Test
@@ -13,7 +14,7 @@ module Mongobzar
       end
     end
 
-    class PersonMappingStrategy
+    class PersonMappingStrategy < Mapping::MappingStrategy
       def initialize(address_mapper)
         @address_mapper = address_mapper
       end

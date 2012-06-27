@@ -13,6 +13,10 @@ module Mongobzar
         mapping_strategy.build_dto(domain_object)
       end
 
+      def build_dto!(dto, domain_object)
+        mapping_strategy.build_dto!(dto, domain_object)
+      end
+
       def build_domain_object(dto)
         mapping_strategy.build_domain_object(dto)
       end

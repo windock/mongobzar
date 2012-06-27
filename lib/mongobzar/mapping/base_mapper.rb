@@ -5,10 +5,7 @@ module Mongobzar
       end
 
       def build_dto(domain_object)
-        return nil unless domain_object
-        dto = {}
-        build_dto!(dto, domain_object)
-        dto
+        mapping_strategy.build_dto(domain_object)
       end
 
       def build_dto!(dto, domain_object)

@@ -14,7 +14,7 @@ module Mongobzar
       end
     end
 
-    class PersonHavingAddressesWithIdMappingStrategy
+    class PersonHavingAddressesWithIdMappingStrategy < Mapping::MappingStrategy
       def initialize(address_mapper)
         @address_mapper = address_mapper
       end
@@ -79,7 +79,6 @@ module Mongobzar
     end
 
     class AddressWithIdMapper < Mongobzar::Mapping::EmbeddedWithIdentityMapper
-
       def mapping_strategy
         Class.new(Mapping::WithIdentityMappingStrategy) do
           def build_new(dto)
@@ -90,14 +89,6 @@ module Mongobzar
             dto['street'] = address.street
           end
         end.new
-      end
-
-      def build_dto!(dto, address)
-        mapping_strategy.build_dto!(dto, address)
-      end
-
-      def build_new(dto={})
-        mapping_strategy.build_new(dto)
       end
     end
 
