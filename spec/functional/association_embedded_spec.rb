@@ -71,7 +71,7 @@ module Mongobzar
 
     class AddressMapper < Mongobzar::Mapping::EmbeddedMapper
       def mapping_strategy
-        AddressMapperMappingStrategy.new(self)
+        AddressMapperMappingStrategy.new
       end
     end
 
