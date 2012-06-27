@@ -1,6 +1,5 @@
 require_relative 'mapped_collection'
 require_relative 'base_mapper'
-require_relative 'has_identity'
 require_relative 'persists_to_collection'
 require_relative 'dependent_with_identity'
 

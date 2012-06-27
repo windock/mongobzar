@@ -10,6 +10,7 @@ module Mongobzar
         return nil unless domain_object
         dto = super
         add_identity_to_dto!(dto)
+        #FIXME: name of the method doesn't tell domain object gets changed
         link_domain_object(domain_object, dto)
         dto
       end

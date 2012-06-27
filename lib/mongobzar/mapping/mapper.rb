@@ -1,15 +1,29 @@
 require 'mongo'
 require_relative 'document_not_found'
 require_relative 'base_mapper'
-require_relative 'has_identity'
 require_relative 'persists_to_collection'
 
 module Mongobzar
   module Mapping
     class Mapper
       include BaseMapper
-      include HasIdentity
       include PersistsToCollection
+      attr_accessor :id_generator
+
+      def id_generator
+        @id_generator ||= BSONIdGenerator.new
+      end
+
+      def build_dto(domain_object)
+        dto = super
+        add_identity_to_dto!(dto)
+        dto
+      end
+
+      def add_identity_to_dto!(dto)
+        dto['_id'] = id_generator.next_id
+      end
+
 
       def all
         dtos = mongo_collection.find
