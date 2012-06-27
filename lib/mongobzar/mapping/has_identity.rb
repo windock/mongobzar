@@ -22,7 +22,7 @@ module Mongobzar
       def build_domain_object(dto)
         return nil unless dto
         domain_object = build_new(dto)
-        domain_object.id = dto['_id']
+        link_domain_object(domain_object, dto)
         build_domain_object!(domain_object, dto)
         domain_object
       end

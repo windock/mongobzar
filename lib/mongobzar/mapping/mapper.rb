@@ -11,9 +11,13 @@ module Mongobzar
       include HasIdentity
       include PersistsToCollection
 
-      #def build_domain_object(dto)
-        #mapping_srategy.build_domain_object(dto)
-      #end
+      def build_domain_object(dto)
+        mapping_strategy.build_domain_object(dto)
+      end
+
+      def build_domain_object!(domain_object, dto)
+        mapping_strategy.build_domain_object!(dto)
+      end
 
       def all
         dtos = mongo_collection.find
@@ -53,7 +57,7 @@ module Mongobzar
       def update(domain_object)
         dto = find_dto(domain_object.id)
         update_dto!(dto, domain_object)
-        mongo_collection.update({'_id' => dto['_id']}, dto)
+        mongo_collection.update({ _id: dto['_id']}, dto)
       end
 
       def destroy(domain_object)
