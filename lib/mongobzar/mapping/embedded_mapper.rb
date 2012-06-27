@@ -1,18 +1,25 @@
 require_relative 'base_mapper'
+require_relative 'mapping_strategy'
 
 module Mongobzar
   module Mapping
     class EmbeddedMapper
       include BaseMapper
 
-      def build_domain_object(dto)
-        return nil unless dto
-        domain_object = build_new(dto)
-        build_domain_object!(domain_object, dto)
-        domain_object
+      def build_dto!(dto, domain_object)
+        mapping_strategy.build_dto!(dto, domain_object)
       end
 
-      def build_domain_object!(domain_object, dto)
+      def build_new(dto)
+        mapping_strategy.build_new(dto)
+      end
+
+      def build_domain_object(dto)
+        mapping_strategy.build_domain_object(dto)
+      end
+
+      def mapping_strategy
+        MappingStrategy.new(self)
       end
 
       def build_dtos(domain_objects)

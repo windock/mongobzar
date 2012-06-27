@@ -59,7 +59,7 @@ module Mongobzar
       end
     end
 
-    class AddressMapperMappingStrategy < Mongobzar::Mapping::EmbeddedMapper
+    class AddressMapperMappingStrategy < Mapping::MappingStrategy
       def build_dto!(dto, address)
         dto['street'] = address.street
       end
@@ -71,15 +71,7 @@ module Mongobzar
 
     class AddressMapper < Mongobzar::Mapping::EmbeddedMapper
       def mapping_strategy
-        AddressMapperMappingStrategy.new
-      end
-
-      def build_dto!(dto, address)
-        mapping_strategy.build_dto!(dto, address)
-      end
-
-      def build_new(dto)
-        mapping_strategy.build_new(dto)
+        AddressMapperMappingStrategy.new(self)
       end
     end
 
