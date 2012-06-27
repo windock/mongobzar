@@ -79,16 +79,21 @@ module Mongobzar
     end
 
     class AddressWithIdMapper < Mongobzar::Mapping::EmbeddedWithIdentityMapper
-      def build_dto!(dto, address)
-        dto['street'] = address.street
-      end
 
       def mapping_strategy
         Class.new do
           def build_new(dto)
             AddressWithId.new(dto['street'])
           end
+
+          def build_dto!(dto, address)
+            dto['street'] = address.street
+          end
         end.new
+      end
+
+      def build_dto!(dto, address)
+        mapping_strategy.build_dto!(dto, address)
       end
 
       def build_new(dto={})
