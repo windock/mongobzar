@@ -19,6 +19,10 @@ module Mongobzar
         @address_mapper = address_mapper
       end
 
+      def build_new(dto)
+        Person.new
+      end
+
       def build_domain_object!(person, dto)
         @address_mapper.build_domain_objects(dto['addresses']).each do |address|
           person.add_address(address)
@@ -58,23 +62,15 @@ module Mongobzar
       end
 
       def build_new(dto={})
-        Person.new
-      end
-
-      def mapping_strategy
-        PersonHavingAddressesWithIdMappingStrategy.new(@address_mapper)
+        mapping_strategy.build_new(dto)
       end
 
       def build_domain_object!(person, dto)
         mapping_strategy.build_domain_object!(person, dto)
       end
 
-      def build_dto!(dto, person)
-        mapping_strategy.build_dto!(dto, person)
-      end
-
-      def update_dto!(dto, person)
-        mapping_strategy.update_dto!(dto, person)
+      def mapping_strategy
+        PersonHavingAddressesWithIdMappingStrategy.new(@address_mapper)
       end
     end
 
