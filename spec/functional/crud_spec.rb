@@ -7,7 +7,7 @@ module Mongobzar
       attr_accessor :id, :name, :description
     end
 
-    class SimpleObjectMappingStrategy < Mapping::MappingStrategy
+    class SimpleObjectMappingStrategy < Mapping::WithIdentityMappingStrategy
       def build_domain_object!(simple_object, dto)
         simple_object.name = dto['name']
         simple_object.description = dto['description']

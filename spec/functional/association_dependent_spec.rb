@@ -3,6 +3,7 @@ require_relative '../../lib/mongobzar/mapping/mapper'
 require_relative '../../lib/mongobzar/mapping/dependent_mapper'
 require_relative '../../lib/mongobzar/mapping/has_created_at'
 require_relative '../../lib/mongobzar/mapping/mapping_strategy'
+require_relative '../../lib/mongobzar/mapping/with_identity_mapping_strategy'
 
 module Mongobzar
   module Test
@@ -27,7 +28,7 @@ module Mongobzar
       attr_accessor :id, :name, :created_at
     end
 
-    class OwnerMappingStrategy < Mapping::MappingStrategy
+    class OwnerMappingStrategy < Mapping::WithIdentityMappingStrategy
       def initialize(pet_mapper)
         @pet_mapper = pet_mapper
       end
