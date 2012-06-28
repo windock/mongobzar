@@ -18,11 +18,17 @@ module Mongobzar
           attr_accessor :string, :number
         end
 
+        class SampleWithRequiredArguments < Sample
+          def initialize(string)
+            @string = string
+          end
+        end
+
         let(:sample_string) { 'sample_string' }
         let(:sample_number) { 5 }
         let(:obj) { Sample.new(sample_string, sample_number) }
         let(:sample_dto) { { string: sample_string, number: sample_number } }
-        subject { SimpleMappingStrategy.new(lambda { Sample.new }) }
+        subject { SimpleMappingStrategy.new(->(dto) { Sample.new }) }
 
         context '#build_domain_object' do
           it 'returns nil if dto is nil' do
@@ -37,12 +43,31 @@ module Mongobzar
 
           context 'given attributes' do
             subject do
-              SimpleMappingStrategy.new(lambda { Sample.new },
+              SimpleMappingStrategy.new(->(dto) { Sample.new },
                                         [:string, :number])
             end
 
             it 'returns domain object with attributes set' do
               subject.build_domain_object(sample_dto).should == obj
+            end
+
+            context 'for dto with string keys' do
+              it 'returns domain object with attributes set' do
+                dto = {
+                  'string' => sample_string,
+                  'number' => sample_number
+                }
+                subject.build_domain_object(dto).should == obj
+              end
+            end
+          end
+
+          context 'for domain object with constructor that requires arguments' do
+            it 'uses build_new with dto to build domain object' do
+              strategy = SimpleMappingStrategy.new(
+                ->(dto) { SampleWithRequiredArguments.new(dto['string']) },
+                [:string, :number])
+              strategy.build_domain_object(sample_dto).should == obj
             end
           end
         end
@@ -61,7 +86,7 @@ module Mongobzar
 
           context 'given an array of attributes' do
             subject do
-              SimpleMappingStrategy.new(lambda { Sample.new },
+              SimpleMappingStrategy.new(->(dto) { Sample.new },
                                         [:string, :number])
             end
 

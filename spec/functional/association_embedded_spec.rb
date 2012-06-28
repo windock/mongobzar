@@ -50,19 +50,9 @@ module Mongobzar
       end
     end
 
-    class AddressMappingStrategy < Mapping::MappingStrategy
-      def build_dto!(dto, address)
-        dto['street'] = address.street
-      end
-
-      def build_new(dto={})
-        Address.new(dto['street'])
-      end
-    end
-
     class AddressMapper < Mongobzar::Mapping::EmbeddedMapper
       def mapping_strategy
-        AddressMappingStrategy.new
+        Mapping::SimpleMappingStrategy.new(->(dto) { Address.new(dto['street']) }, [:street])
       end
     end
 
