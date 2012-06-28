@@ -1,3 +1,6 @@
+require_relative 'mapping_strategy'
+require 'mongobzar/bson_id_generator'
+
 module Mongobzar
   module Mapping
     class WithIdentityMappingStrategy < MappingStrategy

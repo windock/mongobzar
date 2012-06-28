@@ -3,6 +3,8 @@ require_relative '../test/person'
 require_relative '../../lib/mongobzar/mapping/mapper'
 require_relative '../../lib/mongobzar/mapping/embedded_mapper'
 require_relative '../../lib/mongobzar/mapping/mapping_strategy'
+require_relative '../../lib/mongobzar/mapping/with_identity_mapping_strategy'
+require 'mongobzar/mapping/simple_mapping_strategy'
 
 module Mongobzar
   module Test
