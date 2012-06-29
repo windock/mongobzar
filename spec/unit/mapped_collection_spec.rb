@@ -1,5 +1,5 @@
 require_relative '../spec_helper'
-require_relative '../../lib/mongobzar/mapping/mapped_collection'
+require 'mongobzar/mapping/mapped_collection'
 
 include Mongobzar
 class TestDomainObject

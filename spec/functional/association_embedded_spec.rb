@@ -1,7 +1,7 @@
 require_relative 'spec_helper'
 require_relative '../test/person'
-require_relative '../../lib/mongobzar/mapping/mapper'
-require_relative '../../lib/mongobzar/mapping/embedded_mapper'
+require 'mongobzar/mapping/mapper'
+require 'mongobzar/mapping/embedded_mapper'
 require 'mongobzar/mapping_strategy/mapping_strategy'
 require 'mongobzar/mapping_strategy/simple_mapping_strategy'
 

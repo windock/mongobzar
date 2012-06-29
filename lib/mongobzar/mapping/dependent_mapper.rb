@@ -1,7 +1,7 @@
-require_relative 'mapped_collection'
-require_relative 'base_mapper'
-require_relative 'persists_to_collection'
-require_relative 'dependent_with_identity'
+require 'mongobzar/mapping/mapped_collection'
+require 'mongobzar/mapping/base_mapper'
+require 'mongobzar/mapping/persists_to_collection'
+require 'mongobzar/mapping/dependent_with_identity'
 
 module Mongobzar
   module Mapping

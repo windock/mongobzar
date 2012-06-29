@@ -1,7 +1,7 @@
 require 'mongo'
-require_relative 'document_not_found'
-require_relative 'base_mapper'
-require_relative 'persists_to_collection'
+require 'mongobzar/mapping/document_not_found'
+require 'mongobzar/mapping/base_mapper'
+require 'mongobzar/mapping/persists_to_collection'
 
 module Mongobzar
   module Mapping

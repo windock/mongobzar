@@ -1,8 +1,8 @@
 require_relative 'spec_helper'
-require_relative '../../lib/mongobzar/mapping/mapper'
-require_relative '../../lib/mongobzar/mapping/mapped_collection'
-require_relative '../../lib/mongobzar/mapping/embedded_with_identity_mapper'
 require_relative '../test/person'
+require 'mongobzar/mapping/mapper'
+require 'mongobzar/mapping/mapped_collection'
+require 'mongobzar/mapping/embedded_with_identity_mapper'
 require 'mongobzar/mapping_strategy/simple_mapping_strategy'
 require 'mongobzar/mapping_strategy/with_identity_mapping_strategy'
 

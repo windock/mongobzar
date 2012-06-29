@@ -1,5 +1,5 @@
-require_relative 'base_mapper'
-require_relative 'dependent_with_identity'
+require 'mongobzar/mapping/base_mapper'
+require 'mongobzar/mapping/dependent_with_identity'
 
 module Mongobzar
   module Mapping

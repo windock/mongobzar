@@ -1,5 +1,5 @@
 require_relative 'spec_helper'
-require_relative '../../lib/mongobzar/mapping/mapper'
+require 'mongobzar/mapping/mapper'
 require 'mongobzar/mapping_strategy/with_identity_mapping_strategy'
 require 'mongobzar/mapping/mapping_strategy'
 

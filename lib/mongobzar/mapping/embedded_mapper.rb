@@ -1,4 +1,4 @@
-require_relative 'base_mapper'
+require 'mongobzar/mapping/base_mapper'
 require 'mongobzar/mapping_strategy/mapping_strategy'
 
 module Mongobzar
