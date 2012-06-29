@@ -8,22 +8,6 @@ module Mongobzar
     class Mapper
       include BaseMapper
       include PersistsToCollection
-      attr_accessor :id_generator
-
-      def id_generator
-        @id_generator ||= BSONIdGenerator.new
-      end
-
-      def build_dto(domain_object)
-        dto = super
-        add_identity_to_dto!(dto)
-        dto
-      end
-
-      def add_identity_to_dto!(dto)
-        dto['_id'] = id_generator.next_id
-      end
-
 
       def all
         dtos = mongo_collection.find
@@ -33,7 +17,7 @@ module Mongobzar
       end
 
       def find(id)
-        build_domain_object(find_dto(id))
+        mapping_strategy.build_domain_object(find_dto(id))
       end
 
       def find_dto(id)
@@ -56,7 +40,7 @@ module Mongobzar
       end
 
       def update_domain_object_after_insert(domain_object, dto)
-        domain_object.id = dto['_id']
+        mapping_strategy.link_domain_object(domain_object, dto)
       end
       protected :update_domain_object_after_insert
 

@@ -110,15 +110,6 @@ describe 'CRUD operations' do
       @matcher.assert_persisted([@so1, @so2])
     end
 
-    it 'uses IdGenerator to set ids' do
-      sample_id = 'some_id'
-      @mapper.id_generator = stub(next_id: 'some_id')
-      @mapper.insert(@so1)
-
-      @so1.id.should == sample_id
-      @simple_objects_collection.find.to_a[0]['_id'].should == sample_id
-    end
-
     it 'raises InvalidDomainObject if nil was passed' do
       #todo
     end

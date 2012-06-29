@@ -6,10 +6,6 @@ module Mongobzar
     class EmbeddedMapper
       include BaseMapper
 
-      def mapping_strategy
-        MappingStrategy::MappingStrategy.new
-      end
-
       def build_dtos(domain_objects)
         dtos = []
         domain_objects.each do |domain_object|

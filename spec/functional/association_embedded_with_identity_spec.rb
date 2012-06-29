@@ -64,7 +64,7 @@ module Mongobzar
       end
 
       def mapping_strategy
-        PersonHavingAddressesWithIdMappingStrategy.new(@address_mapper)
+        MappingStrategy::WithIdentityMappingStrategy.new(PersonHavingAddressesWithIdMappingStrategy.new(@address_mapper))
       end
     end
 
