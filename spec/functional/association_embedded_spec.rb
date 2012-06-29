@@ -45,18 +45,15 @@ module Mongobzar
       end
 
       def mapping_strategy
-        MappingStrategy::WithIdentityMappingStrategy.new(PersonMappingStrategy.new(AddressMapper.new))
+        MappingStrategy::WithIdentityMappingStrategy.new(PersonMappingStrategy.new(address_mapping_strategy))
       end
-    end
 
-    class AddressMapper < Mongobzar::Mapping::EmbeddedMapper
-      def mapping_strategy
+      def address_mapping_strategy
         MappingStrategy::SimpleMappingStrategy.new(->(dto) { Address.new(dto['street']) }, [:street])
       end
     end
 
     class AddressMappingMatcher < EmbeddedMappingMatcher
-
       def assert_single_loaded(specification, address)
         address.should_not be_nil
         specification.street.should == address.street

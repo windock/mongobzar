@@ -19,6 +19,14 @@ module Mongobzar
       def update_dto(dto, domain_object)
         mapping_strategy.update_dto(dto, domain_object)
       end
+
+      def build_dtos(domain_objects)
+        mapping_strategy.build_dtos(domain_objects)
+      end
+
+      def build_domain_objects(dtos)
+        mapping_strategy.build_domain_objects(dtos)
+      end
     end
   end
 end
