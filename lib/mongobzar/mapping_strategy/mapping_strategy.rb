@@ -1,5 +1,5 @@
 module Mongobzar
-  module Mapping
+  module MappingStrategy
     class MappingStrategy
       def build_domain_object(dto)
         return nil unless dto

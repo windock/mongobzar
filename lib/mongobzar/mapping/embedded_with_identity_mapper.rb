@@ -1,6 +1,5 @@
 require_relative 'base_mapper'
 require_relative 'dependent_with_identity'
-require_relative 'with_identity_mapping_strategy'
 
 module Mongobzar
   module Mapping

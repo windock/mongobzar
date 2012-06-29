@@ -1,7 +1,7 @@
-require 'mongobzar/mapping/simple_mapping_strategy'
+require 'mongobzar/mapping_strategy/simple_mapping_strategy'
 
 module Mongobzar
-  module Mapping
+  module MappingStrategy
     module Test
       describe SimpleMappingStrategy do
         class Sample
@@ -11,7 +11,7 @@ module Mongobzar
           end
 
           def ==(o)
-            string == o.string
+            string == o.string &&
             number == o.number
           end
 

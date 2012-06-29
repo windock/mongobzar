@@ -1,8 +1,8 @@
 require_relative 'spec_helper'
 require_relative '../../lib/mongobzar/mapping/mapper'
 require_relative '../../lib/mongobzar/mapping/dependent_mapper'
-require_relative '../../lib/mongobzar/mapping/mapping_strategy'
-require_relative '../../lib/mongobzar/mapping/with_identity_mapping_strategy'
+require 'mongobzar/mapping_strategy/mapping_strategy'
+require 'mongobzar/mapping_strategy/with_identity_mapping_strategy'
 
 module Mongobzar
   module Test
@@ -27,7 +27,7 @@ module Mongobzar
       attr_accessor :id, :name, :created_at
     end
 
-    class OwnerMappingStrategy < Mapping::WithIdentityMappingStrategy
+    class OwnerMappingStrategy < MappingStrategy::MappingStrategy
       def initialize(pet_mapper)
         @pet_mapper = pet_mapper
       end
@@ -60,7 +60,7 @@ module Mongobzar
       end
 
       def mapping_strategy
-        OwnerMappingStrategy.new(@pet_mapper)
+        MappingStrategy::WithIdentityMappingStrategy.new(OwnerMappingStrategy.new(@pet_mapper))
       end
 
       def insert(owner)
@@ -79,7 +79,7 @@ module Mongobzar
       end
     end
 
-    class PetMappingStrategy < Mapping::WithIdentityMappingStrategy
+    class PetMappingStrategy < MappingStrategy::MappingStrategy
       def build_new(dto={})
         Pet.new
       end
@@ -104,7 +104,7 @@ module Mongobzar
       end
 
       def mapping_strategy
-        PetMappingStrategy.new
+        MappingStrategy::WithIdentityMappingStrategy.new(PetMappingStrategy.new)
       end
     end
 

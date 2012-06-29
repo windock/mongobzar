@@ -1,5 +1,5 @@
 module Mongobzar
-  module Mapping
+  module MappingStrategy
     class SimpleMappingStrategy
       def initialize(build_new, attribute_names=[])
         @build_new = build_new
@@ -25,6 +25,8 @@ module Mongobzar
 
         dto
       end
+
+      #TODO: update_dto, update_dto!
     end
   end
 end

@@ -2,9 +2,8 @@ require_relative 'spec_helper'
 require_relative '../test/person'
 require_relative '../../lib/mongobzar/mapping/mapper'
 require_relative '../../lib/mongobzar/mapping/embedded_mapper'
-require_relative '../../lib/mongobzar/mapping/mapping_strategy'
-require_relative '../../lib/mongobzar/mapping/with_identity_mapping_strategy'
-require 'mongobzar/mapping/simple_mapping_strategy'
+require 'mongobzar/mapping_strategy/mapping_strategy'
+require 'mongobzar/mapping_strategy/simple_mapping_strategy'
 
 module Mongobzar
   module Test
@@ -16,7 +15,7 @@ module Mongobzar
       end
     end
 
-    class PersonMappingStrategy < Mapping::WithIdentityMappingStrategy
+    class PersonMappingStrategy < MappingStrategy::MappingStrategy
       def initialize(address_mapper)
         @address_mapper = address_mapper
       end
@@ -52,7 +51,7 @@ module Mongobzar
 
     class AddressMapper < Mongobzar::Mapping::EmbeddedMapper
       def mapping_strategy
-        Mapping::SimpleMappingStrategy.new(->(dto) { Address.new(dto['street']) }, [:street])
+        MappingStrategy::SimpleMappingStrategy.new(->(dto) { Address.new(dto['street']) }, [:street])
       end
     end
 

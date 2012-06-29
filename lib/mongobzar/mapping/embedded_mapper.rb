@@ -1,5 +1,5 @@
 require_relative 'base_mapper'
-require_relative 'mapping_strategy'
+require 'mongobzar/mapping_strategy/mapping_strategy'
 
 module Mongobzar
   module Mapping
@@ -7,7 +7,7 @@ module Mongobzar
       include BaseMapper
 
       def mapping_strategy
-        MappingStrategy.new
+        MappingStrategy::MappingStrategy.new
       end
 
       def build_dtos(domain_objects)

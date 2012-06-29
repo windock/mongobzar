@@ -1,5 +1,7 @@
 require_relative 'spec_helper'
 require_relative '../../lib/mongobzar/mapping/mapper'
+require 'mongobzar/mapping_strategy/with_identity_mapping_strategy'
+require 'mongobzar/mapping/mapping_strategy'
 
 module Mongobzar
   module Test
@@ -7,7 +9,7 @@ module Mongobzar
       attr_accessor :id, :name, :description
     end
 
-    class SimpleObjectMappingStrategy < Mapping::WithIdentityMappingStrategy
+    class SimpleObjectMappingStrategy < MappingStrategy::MappingStrategy
       def build_domain_object!(simple_object, dto)
         simple_object.name = dto['name']
         simple_object.description = dto['description']
@@ -29,7 +31,7 @@ module Mongobzar
       end
 
       def mapping_strategy
-        SimpleObjectMappingStrategy.new
+        MappingStrategy::WithIdentityMappingStrategy.new(SimpleObjectMappingStrategy.new)
       end
     end
 

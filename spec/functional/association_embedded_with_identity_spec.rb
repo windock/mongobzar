@@ -3,6 +3,8 @@ require_relative '../../lib/mongobzar/mapping/mapper'
 require_relative '../../lib/mongobzar/mapping/mapped_collection'
 require_relative '../../lib/mongobzar/mapping/embedded_with_identity_mapper'
 require_relative '../test/person'
+require 'mongobzar/mapping_strategy/simple_mapping_strategy'
+require 'mongobzar/mapping_strategy/with_identity_mapping_strategy'
 
 module Mongobzar
   module Test
@@ -14,7 +16,7 @@ module Mongobzar
       end
     end
 
-    class PersonHavingAddressesWithIdMappingStrategy < Mapping::MappingStrategy
+    class PersonHavingAddressesWithIdMappingStrategy < MappingStrategy::MappingStrategy
       def initialize(address_mapper)
         @address_mapper = address_mapper
       end
@@ -66,17 +68,19 @@ module Mongobzar
       end
     end
 
+    class AddressWithIdMappingStrategy < Mongobzar::MappingStrategy::MappingStrategy
+      def build_new(dto)
+        AddressWithId.new(dto['street'])
+      end
+
+      def build_dto!(dto, address)
+        dto['street'] = address.street
+      end
+    end
+
     class AddressWithIdMapper < Mongobzar::Mapping::EmbeddedWithIdentityMapper
       def mapping_strategy
-        Class.new(Mapping::WithIdentityMappingStrategy) do
-          def build_new(dto)
-            AddressWithId.new(dto['street'])
-          end
-
-          def build_dto!(dto, address)
-            dto['street'] = address.street
-          end
-        end.new
+        MappingStrategy::WithIdentityMappingStrategy.new(AddressWithIdMappingStrategy.new)
       end
     end
 
