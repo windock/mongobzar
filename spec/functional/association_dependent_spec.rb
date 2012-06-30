@@ -46,17 +46,11 @@ module Mongobzar
     class OwnerMapper < Mongobzar::Mapping::Mapper
       def initialize(database_name)
         super
-        @clock = Time
         @pet_mapper = PetMapper.new(database_name)
       end
 
       def mongo_collection_name
         'owners'
-      end
-
-      attr_reader :clock
-      def clock=(clock)
-        @clock = @pet_mapper.clock = clock
       end
 
       def mapping_strategy
