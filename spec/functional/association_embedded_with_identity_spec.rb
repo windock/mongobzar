@@ -16,8 +16,8 @@ module Mongobzar
     end
 
     class PersonHavingAddressesWithIdMappingStrategy < MappingStrategy::EntityMappingStrategy
-      def initialize(address_mapper)
-        @address_mapper = address_mapper
+      def initialize(address_mapping_strategy)
+        @address_mapping_strategy = address_mapping_strategy
       end
 
       def build_new(dto)
@@ -25,28 +25,28 @@ module Mongobzar
       end
 
       def build_domain_object!(person, dto)
-        @address_mapper.build_domain_objects(dto['addresses']).each do |address|
+        @address_mapping_strategy.build_domain_objects(dto['addresses']).each do |address|
           person.add_address(address)
         end
-        person.work_address = @address_mapper.build_domain_object(
+        person.work_address = @address_mapping_strategy.build_domain_object(
           dto['work_address']
         )
       end
 
       def build_dto!(dto, person)
-        dto['addresses'] = @address_mapper.build_dtos(
+        dto['addresses'] = @address_mapping_strategy.build_dtos(
           person.addresses
         )
-        dto['work_address'] = @address_mapper.build_dto(
+        dto['work_address'] = @address_mapping_strategy.build_dto(
           person.work_address
         )
       end
 
       def update_dto!(dto, person)
-        dto['addresses'] = @address_mapper.update_dtos(
+        dto['addresses'] = @address_mapping_strategy.update_dtos(
           dto['addresses'], person.addresses
         )
-        dto['work_address'] = @address_mapper.update_dto(
+        dto['work_address'] = @address_mapping_strategy.update_dto(
           dto['work_address'], person.work_address
         )
       end
