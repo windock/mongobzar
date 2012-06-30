@@ -30,12 +30,17 @@ module Mongobzar
           dto['number'] = domain_object.number
           dto['string'] = domain_object.string
         end
+
+        def update_dto!(dto, domain_object)
+          dto['string'] = 'updated_string'
+          dto['number'] = domain_object.number
+        end
       end
 
       describe ValueObjectMappingStrategy do
         subject { SampleMappingStrategy.new }
         let(:sample_string) { 'sample_string' }
-        let(:sample_number) { 'sample_number' }
+        let(:sample_number) { 5 }
         let(:sample_dto) do
           {
             'number' => sample_number,
@@ -88,6 +93,16 @@ module Mongobzar
 
           it 'creates a hash and populates it with build_dto!' do
             subject.build_dto(sample_obj).should == sample_dto
+          end
+        end
+
+        context '#update_dto' do
+          it 'returns nil if domain object is nil' do
+            subject.update_dto(stub, nil).should == nil
+          end
+
+          it 'updates dto using update_dto!' do
+            subject.update_dto(sample_dto, Sample.new('new_string', 42)).should == { 'string' => 'updated_string', 'number' => 42 }
           end
         end
       end
