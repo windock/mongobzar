@@ -14,7 +14,7 @@ module Mongobzar
       end
     end
 
-    class PersonMappingStrategy < MappingStrategy::ValueObjectMappingStrategy
+    class PersonMappingStrategy < MappingStrategy::EntityMappingStrategy
       def initialize(address_mapper)
         @address_mapper = address_mapper
       end
@@ -44,7 +44,7 @@ module Mongobzar
       end
 
       def mapping_strategy
-        MappingStrategy::EntityMappingStrategy.new(PersonMappingStrategy.new(address_mapping_strategy))
+        PersonMappingStrategy.new(address_mapping_strategy)
       end
 
       def address_mapping_strategy

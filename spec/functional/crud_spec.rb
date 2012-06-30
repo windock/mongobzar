@@ -8,7 +8,7 @@ module Mongobzar
       attr_accessor :id, :name, :description
     end
 
-    class SimpleObjectMappingStrategy < MappingStrategy::ValueObjectMappingStrategy
+    class SimpleObjectMappingStrategy < MappingStrategy::EntityMappingStrategy
       def build_domain_object!(simple_object, dto)
         simple_object.name = dto['name']
         simple_object.description = dto['description']
@@ -30,7 +30,7 @@ module Mongobzar
       end
 
       def mapping_strategy
-        MappingStrategy::EntityMappingStrategy.new(SimpleObjectMappingStrategy.new)
+        SimpleObjectMappingStrategy.new
       end
     end
 

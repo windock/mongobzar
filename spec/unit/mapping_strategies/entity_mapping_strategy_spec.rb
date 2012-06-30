@@ -18,12 +18,25 @@ module Mongobzar
         attr_accessor :string, :id
       end
 
-      describe EntityMappingStrategy do
-        subject do
-          EntityMappingStrategy.new(mapping_strategy)
+      class SampleEntityMappingStrategy < EntityMappingStrategy
+        def build_new(dto)
+          SampleWithId.new
         end
 
-        let(:mapping_strategy) { stub }
+        def build_domain_object!(domain_object, dto)
+          domain_object.string = dto['string']
+        end
+
+        def build_dto!(dto, domain_object)
+          dto['string'] = domain_object.string
+        end
+      end
+
+      describe EntityMappingStrategy do
+        subject do
+          SampleEntityMappingStrategy.new
+        end
+
         let(:obj) do
           res = SampleWithId.new
           res.string = sample_string
@@ -31,13 +44,6 @@ module Mongobzar
         end
         let(:sample_id) { 'sample_id' }
         let(:sample_string) { 'sample_string' }
-
-        context 'undefined methods' do
-          it 'delegates all undefined methods to mapping_strategy' do
-            mapping_strategy.should_receive(:whatever).with('a', 1)
-            subject.whatever('a', 1)
-          end
-        end
 
         context '#link_domain_object' do
           context 'given domain object with writable id and dto with _id' do
@@ -65,7 +71,6 @@ module Mongobzar
               before do
                 subject.id_generator = stub(next_id: sample_id)
                 dto = { 'string' => sample_string }
-                mapping_strategy.stub!(:build_dto).with(obj) { dto }
               end
 
               it 'generates new id for domain object' do
@@ -99,10 +104,6 @@ module Mongobzar
           context 'if dto is a hash that has _id' do
             it 'returns domain object with that _id' do
               obj = SampleWithId.new
-              mapping_strategy.stub!(:build_new).with(dto_with_id) { obj }
-              mapping_strategy.stub!(:build_domain_object!).with(obj, dto_with_id) do
-                obj.string = sample_string
-              end
               subject.build_domain_object(dto_with_id).should == obj_with_id
             end
           end

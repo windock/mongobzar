@@ -27,7 +27,7 @@ module Mongobzar
       attr_accessor :id, :name, :created_at
     end
 
-    class OwnerMappingStrategy < MappingStrategy::ValueObjectMappingStrategy
+    class OwnerMappingStrategy < MappingStrategy::EntityMappingStrategy
       def initialize(pet_mapper)
         @pet_mapper = pet_mapper
       end
@@ -60,7 +60,7 @@ module Mongobzar
       end
 
       def mapping_strategy
-        MappingStrategy::EntityMappingStrategy.new(OwnerMappingStrategy.new(@pet_mapper))
+        OwnerMappingStrategy.new(@pet_mapper)
       end
 
       def insert(owner)
@@ -79,7 +79,7 @@ module Mongobzar
       end
     end
 
-    class PetMappingStrategy < MappingStrategy::ValueObjectMappingStrategy
+    class PetMappingStrategy < MappingStrategy::EntityMappingStrategy
       def build_new(dto={})
         Pet.new
       end
@@ -104,7 +104,7 @@ module Mongobzar
       end
 
       def mapping_strategy
-        MappingStrategy::EntityMappingStrategy.new(PetMappingStrategy.new)
+        PetMappingStrategy.new
       end
     end
 

@@ -15,7 +15,7 @@ module Mongobzar
       end
     end
 
-    class PersonHavingAddressesWithIdMappingStrategy < MappingStrategy::ValueObjectMappingStrategy
+    class PersonHavingAddressesWithIdMappingStrategy < MappingStrategy::EntityMappingStrategy
       def initialize(address_mapper)
         @address_mapper = address_mapper
       end
@@ -58,13 +58,12 @@ module Mongobzar
       end
 
       def mapping_strategy
-        MappingStrategy::EntityMappingStrategy.new(
-          PersonHavingAddressesWithIdMappingStrategy.new(
-            MappingStrategy::EntityMappingStrategy.new(AddressWithIdMappingStrategy.new)))
+        PersonHavingAddressesWithIdMappingStrategy.new(
+          AddressWithIdMappingStrategy.new)
       end
     end
 
-    class AddressWithIdMappingStrategy < Mongobzar::MappingStrategy::ValueObjectMappingStrategy
+    class AddressWithIdMappingStrategy < Mongobzar::MappingStrategy::EntityMappingStrategy
       def build_new(dto)
         AddressWithId.new(dto['street'])
       end

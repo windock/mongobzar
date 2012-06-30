@@ -1,3 +1,5 @@
+require 'mongobzar/mapping_strategy/value_object_mapping_strategy'
+
 module Mongobzar
   module MappingStrategy
     class SimpleMappingStrategy < ValueObjectMappingStrategy
