@@ -2,7 +2,6 @@ module Mongobzar
   module Mapping
     module PersistsToCollection
       def initialize(database_name)
-        super
         @connection = Mongo::Connection.new
         @db = @connection.db(database_name)
         @mongo_collection = @db.collection(mongo_collection_name, safe: true)

@@ -54,7 +54,7 @@ module Mongobzar
 
       def find_dependent_collection(parent)
         dtos = dependent_dtos_cursor(parent)
-        build_domain_objects(dtos)
+        mapping_strategy.build_domain_objects(dtos)
       end
 
       def link_dto!(dto, owner_domain_object)
