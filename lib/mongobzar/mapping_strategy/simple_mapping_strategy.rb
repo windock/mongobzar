@@ -1,6 +1,6 @@
 module Mongobzar
   module MappingStrategy
-    class SimpleMappingStrategy < MappingStrategy
+    class SimpleMappingStrategy < ValueObjectMappingStrategy
       def initialize(build_new, attribute_names=[])
         @build_new = build_new
         @method_names = attribute_names

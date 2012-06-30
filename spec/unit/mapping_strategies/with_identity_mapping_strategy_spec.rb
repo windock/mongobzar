@@ -1,4 +1,4 @@
-require 'mongobzar/mapping_strategy/with_identity_mapping_strategy'
+require 'mongobzar/mapping_strategy/entity_mapping_strategy'
 require 'mongobzar/bson_id_generator'
 
 module Mongobzar
@@ -18,9 +18,9 @@ module Mongobzar
         attr_accessor :string, :id
       end
 
-      describe WithIdentityMappingStrategy do
+      describe EntityMappingStrategy do
         subject do
-          WithIdentityMappingStrategy.new(mapping_strategy)
+          EntityMappingStrategy.new(mapping_strategy)
         end
 
         let(:mapping_strategy) { stub }

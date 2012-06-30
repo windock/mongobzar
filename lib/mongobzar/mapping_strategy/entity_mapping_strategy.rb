@@ -3,7 +3,7 @@ require 'mongobzar/mapping/mapped_collection'
 
 module Mongobzar
   module MappingStrategy
-    class WithIdentityMappingStrategy
+    class EntityMappingStrategy
       def initialize(mapping_strategy)
         @mapping_strategy = mapping_strategy
       end
