@@ -1,13 +1,11 @@
 require 'mongo'
 require 'mongobzar/mapping/document_not_found'
 require 'mongobzar/mapping/base_mapper'
-require 'mongobzar/mapping/persists_to_collection'
 
 module Mongobzar
   module Mapping
     class Mapper
       include BaseMapper
-      include PersistsToCollection
 
       def all
         dtos = mongo_collection.find

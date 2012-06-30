@@ -1,12 +1,10 @@
 require 'mongobzar/mapping/mapped_collection'
 require 'mongobzar/mapping/base_mapper'
-require 'mongobzar/mapping/persists_to_collection'
 
 module Mongobzar
   module Mapping
     class DependentMapper
       include BaseMapper
-      include PersistsToCollection
 
       attr_accessor :foreign_key
 
