@@ -30,20 +30,18 @@ module Mongobzar
         def build_dto!(dto, domain_object)
           dto['string'] = domain_object.string
         end
+
+        def update_dto!(dto, domain_object)
+          dto['string'] = 'updated_string'
+        end
       end
 
       describe EntityMappingStrategy do
-        subject do
-          SampleEntityMappingStrategy.new
-        end
+        subject { SampleEntityMappingStrategy.new }
 
-        let(:obj) do
-          res = SampleWithId.new
-          res.string = sample_string
-          res
-        end
         let(:sample_id) { 'sample_id' }
         let(:sample_string) { 'sample_string' }
+        let(:obj) { res = SampleWithId.new(sample_string) }
 
         context '#link_domain_object' do
           context 'given domain object with writable id and dto with _id' do
@@ -69,7 +67,6 @@ module Mongobzar
           context 'if given domain object doesn\'t have an id' do
             before do
               subject.id_generator = stub(next_id: sample_id)
-              dto = { 'string' => sample_string }
             end
 
             it 'generates new id for domain object' do
@@ -103,10 +100,23 @@ module Mongobzar
               subject.build_domain_object(dto_with_id).should == obj_with_id
             end
           end
+        end
 
-          context 'if dto doesn\'t have _id' do
-            it 'TODO' do
-            end
+        context '#link_domain_object' do
+          it 'sets id of domain object to _id value of dto' do
+            subject.link_domain_object(obj, { '_id' => sample_id })
+            obj.id.should == sample_id
+          end
+        end
+
+        context '#update_dto' do
+          it 'returns nil if domain object is nil' do
+            subject.update_dto(stub, nil).should == nil
+          end
+
+          it 'updates dto using update_dto!' do
+            dto = { '_id' => sample_id, 'string' => sample_string }
+            subject.update_dto(dto, SampleWithId.new('new_string')).should == { '_id' => sample_id, 'string' => 'updated_string' }
           end
         end
       end

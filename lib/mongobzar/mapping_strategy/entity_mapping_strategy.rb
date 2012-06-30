@@ -6,9 +6,6 @@ module Mongobzar
     class EntityMappingStrategy
       def build_domain_object(dto)
         return nil if dto.nil?
-        #FIXME: yes, this doesn't really look like
-        # simple decorator. Decorated object has dependency
-        # of id being set, for DependenMapper, for example
         domain_object = build_new(dto)
         domain_object.id = dto['_id']
         build_domain_object!(domain_object, dto)
@@ -20,6 +17,7 @@ module Mongobzar
 
       def build_dto(domain_object)
         return nil if domain_object.nil?
+        #FIXME: this method shouldn't really change id. Move it upwards.
         domain_object.id = id_generator.next_id
         dto = {}
         dto['_id'] = domain_object.id
