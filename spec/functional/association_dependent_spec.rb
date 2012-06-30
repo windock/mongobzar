@@ -44,11 +44,6 @@ module Mongobzar
     end
 
     class OwnerMapper < Mongobzar::Mapping::Mapper
-      def initialize(database_name)
-        super
-        @pet_mapper = PetMapper.new(database_name)
-      end
-
       def mongo_collection_name
         'owners'
       end
@@ -59,18 +54,23 @@ module Mongobzar
 
       def insert(owner)
         super
-        @pet_mapper.insert_dependent_collection(owner, owner.pets)
+        pet_mapper.insert_dependent_collection(owner, owner.pets)
       end
 
       def update(owner)
         super
-        @pet_mapper.update_dependent_collection(owner, owner.pets)
+        pet_mapper.update_dependent_collection(owner, owner.pets)
       end
 
       def clear_everything!
         super
-        @pet_mapper.clear_everything!
+        pet_mapper.clear_everything!
       end
+
+      private
+        def pet_mapper
+          @pet_mapper ||= PetMapper.new(database_name)
+        end
     end
 
     class PetMappingStrategy < MappingStrategy::EntityMappingStrategy

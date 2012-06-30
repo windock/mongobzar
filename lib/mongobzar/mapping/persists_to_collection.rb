@@ -4,6 +4,7 @@ module Mongobzar
       def initialize(database_name)
         @connection = Mongo::Connection.new
         @db = @connection.db(database_name)
+        @database_name = database_name
         @mongo_collection = @db.collection(mongo_collection_name, safe: true)
       end
 
@@ -13,6 +14,7 @@ module Mongobzar
 
       protected
         attr_reader :mongo_collection
+        attr_reader :database_name
     end
   end
 end

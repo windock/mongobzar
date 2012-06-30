@@ -62,28 +62,26 @@ module Mongobzar
         end
 
         context '#build_dto' do
-          context 'if domain object is nil' do
-            it 'returns nil' do
-              subject.build_dto(nil).should == nil
+          it 'returns nil if domain object is nil' do
+            subject.build_dto(nil).should == nil
+          end
+
+          context 'if given domain object doesn\'t have an id' do
+            before do
+              subject.id_generator = stub(next_id: sample_id)
+              dto = { 'string' => sample_string }
             end
 
-            context 'if given domain object doesn\'t have an id' do
-              before do
-                subject.id_generator = stub(next_id: sample_id)
-                dto = { 'string' => sample_string }
-              end
+            it 'generates new id for domain object' do
+              subject.build_dto(obj)
+              obj.id.should == sample_id
+            end
 
-              it 'generates new id for domain object' do
-                subject.build_dto(obj)
-                obj.id.should == sample_id
-              end
-
-              it 'builds dto from domain object that has generated _id' do
-                subject.build_dto(obj).should == {
-                  '_id' => sample_id,
-                  'string' => sample_string
-                }
-              end
+            it 'builds dto from domain object using build_dto! and sets id' do
+              subject.build_dto(obj).should == {
+                '_id' => sample_id,
+                'string' => sample_string
+              }
             end
           end
         end
@@ -95,14 +93,12 @@ module Mongobzar
             SampleWithId.new(sample_string, sample_id)
           end
 
-          context 'if dto is nil' do
-            it 'returns nil' do
-              subject.build_domain_object(nil).should == nil
-            end
+          it 'returns nil if dto is nil' do
+            subject.build_domain_object(nil).should == nil
           end
 
           context 'if dto is a hash that has _id' do
-            it 'returns domain object with that _id' do
+            it 'builds domain object using build_new and build_domain_object, and sets id' do
               obj = SampleWithId.new
               subject.build_domain_object(dto_with_id).should == obj_with_id
             end

@@ -2,19 +2,11 @@ module Mongobzar
   module MappingStrategy
     class ValueObjectMappingStrategy
       def build_dtos(domain_objects)
-        dtos = []
-        domain_objects.each do |domain_object|
-          dtos << build_dto(domain_object)
-        end
-        dtos
+        domain_objects.map { |obj| build_dto(obj) }
       end
 
       def build_domain_objects(dtos)
-        domain_objects = []
-        dtos.each do |dto|
-          domain_objects << build_domain_object(dto)
-        end
-        domain_objects
+        dtos.map { |dto| build_domain_object(dto) }
       end
 
       def build_domain_object(dto)
