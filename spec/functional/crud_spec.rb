@@ -1,7 +1,6 @@
 require_relative 'spec_helper'
 require 'mongobzar/mapping/mapper'
 require 'mongobzar/mapping_strategy/with_identity_mapping_strategy'
-require 'mongobzar/mapping/mapping_strategy'
 
 module Mongobzar
   module Test

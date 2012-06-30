@@ -1,19 +1,17 @@
 require 'mongobzar/mapping/mapped_collection'
 require 'mongobzar/mapping/base_mapper'
 require 'mongobzar/mapping/persists_to_collection'
-require 'mongobzar/mapping/dependent_with_identity'
 
 module Mongobzar
   module Mapping
     class DependentMapper
       include BaseMapper
       include PersistsToCollection
-      include DependentWithIdentity
 
       attr_accessor :foreign_key
 
       def insert_dependent_collection(parent, domain_objects)
-        dict, dtos = build_dtos_collection(domain_objects)
+        dict, dtos = mapping_strategy.build_dtos_collection(domain_objects)
 
         dtos.each do |dto|
           link_dto!(dto, parent)
@@ -33,7 +31,7 @@ module Mongobzar
 
       def update_dependent_collection(parent, domain_objects)
         dtos = dependent_dtos_cursor(parent).to_a
-        dict = update_dtos_collection(dtos, domain_objects)
+        dict = mapping_strategy.update_dtos_collection(dtos, domain_objects)
 
         dtos = dict.values
         dtos.each do |dto|

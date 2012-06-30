@@ -1,4 +1,5 @@
 require 'mongobzar/bson_id_generator'
+require 'mongobzar/mapping/mapped_collection'
 
 module Mongobzar
   module MappingStrategy
@@ -39,6 +40,53 @@ module Mongobzar
       def method_missing(name, *args)
         @mapping_strategy.send(name, *args)
       end
+
+      #TEST_ME
+      def build_dtos(domain_objects)
+        dict, dtos = build_dtos_collection(domain_objects)
+        dict.each do |domain_object, dto|
+          link_domain_object(domain_object, dto)
+        end
+        dict.values
+      end
+
+      #TEST_ME
+      def update_dtos(dtos, domain_objects)
+        dict = update_dtos_collection(dtos, domain_objects)
+        dict.each do |domain_object, dto|
+          link_domain_object(domain_object, dto)
+        end
+        dict.values
+      end
+
+      #TEST_ME
+      def build_domain_objects(dtos)
+        mapped_collection = build_mapped_collection
+        mapped_collection.load_dtos(dtos)
+        mapped_collection.domain_objects
+      end
+
+      #TEST_ME
+      def build_dtos_collection(domain_objects)
+        mapped_collection = build_mapped_collection
+        mapped_collection.load_domain_objects(domain_objects)
+        dict = mapped_collection.dict
+        dtos = dict.values
+        [dict, dtos]
+      end
+
+      #TEST_ME
+      def update_dtos_collection(dtos, domain_objects)
+        mapped_collection = build_mapped_collection
+        mapped_collection.load_dtos(dtos)
+        mapped_collection.update(domain_objects)
+        mapped_collection.dict
+      end
+
+      private
+        def build_mapped_collection
+          Mapping::MappedCollection.new(self)
+        end
     end
   end
 end
