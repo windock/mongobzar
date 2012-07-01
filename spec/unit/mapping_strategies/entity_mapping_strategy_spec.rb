@@ -65,24 +65,20 @@ module Mongobzar
           end
 
           context 'if given domain object doesn\'t have an id' do
-            before do
+            it 'builds dto from domain object using build_dto! and generates id for it' do
               subject.id_generator = stub(next_id: sample_id)
-            end
-
-            it 'generates new id for domain object if it is not present' do
-              subject.build_dto(obj)
-              obj.id.should == sample_id
-            end
-
-            it 'doesn\'t change id if it is present' do
-              obj.id = 5
-              subject.build_dto(obj)
-              obj.id.should == 5
-            end
-
-            it 'builds dto from domain object using build_dto! and sets id' do
               subject.build_dto(obj).should == {
                 '_id' => sample_id,
+                'string' => sample_string
+              }
+            end
+          end
+
+          context 'if given domain object has an id' do
+            it 'builds dto from domain object using build_dto! and uses id of domain object' do
+              obj.id = 5
+              subject.build_dto(obj).should == {
+                '_id' => 5,
                 'string' => sample_string
               }
             end

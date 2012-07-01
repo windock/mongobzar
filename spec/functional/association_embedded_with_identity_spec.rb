@@ -34,21 +34,15 @@ module Mongobzar
       end
 
       def build_dto!(dto, person)
-        dto['addresses'] = @address_mapping_strategy.build_dtos(
-          person.addresses
-        )
-        dto['work_address'] = @address_mapping_strategy.build_dto(
-          person.work_address
-        )
-      end
-
-      def update_dto!(dto, person)
-        dto['addresses'] = @address_mapping_strategy.update_dtos(
-          dto['addresses'], person.addresses
-        )
-        dto['work_address'] = @address_mapping_strategy.update_dto(
-          dto['work_address'], person.work_address
-        )
+        dto['addresses'] = person.addresses.map do |address|
+          address_dto = @address_mapping_strategy.build_dto(address)
+          address.id = address_dto['_id']
+          address_dto
+        end
+        if person.work_address
+          dto['work_address'] = @address_mapping_strategy.build_dto(person.work_address)
+          person.work_address.id = dto['work_address']['_id']
+        end
       end
     end
 
