@@ -69,9 +69,15 @@ module Mongobzar
               subject.id_generator = stub(next_id: sample_id)
             end
 
-            it 'generates new id for domain object' do
+            it 'generates new id for domain object if it is not present' do
               subject.build_dto(obj)
               obj.id.should == sample_id
+            end
+
+            it 'doesn\'t change id if it is present' do
+              obj.id = 5
+              subject.build_dto(obj)
+              obj.id.should == 5
             end
 
             it 'builds dto from domain object using build_dto! and sets id' do

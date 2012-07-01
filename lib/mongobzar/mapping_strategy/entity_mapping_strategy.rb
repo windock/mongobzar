@@ -19,7 +19,9 @@ module Mongobzar
         return nil if domain_object.nil?
         #FIXME: this method shouldn't really change id. Move it upwards.
         #FIXME: should it always change id of domain object?
-        domain_object.id = id_generator.next_id
+        unless domain_object.id
+          domain_object.id = id_generator.next_id
+        end
         dto = {}
         dto['_id'] = domain_object.id
         build_dto!(dto, domain_object)
