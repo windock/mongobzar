@@ -10,7 +10,7 @@ module Mongobzar
       def all
         dtos = mongo_collection.find
         dtos.map do |dto|
-          build_domain_object(dto)
+          mapping_strategy.build_domain_object(dto)
         end
       end
 
@@ -32,7 +32,7 @@ module Mongobzar
       end
 
       def insert(domain_object)
-        dto = build_dto(domain_object)
+        dto = mapping_strategy.build_dto(domain_object)
         insert_dto(dto)
         update_domain_object_after_insert(domain_object, dto)
       end
