@@ -18,6 +18,7 @@ module Mongobzar
       def build_dto(domain_object)
         return nil if domain_object.nil?
         #FIXME: this method shouldn't really change id. Move it upwards.
+        #FIXME: should it always change id of domain object?
         domain_object.id = id_generator.next_id
         dto = {}
         dto['_id'] = domain_object.id
@@ -50,13 +51,10 @@ module Mongobzar
 
       attr_writer :id_generator
 
-      #TEST_ME
       def build_dtos(domain_objects)
-        dict, dtos = build_dtos_collection(domain_objects)
-        dict.each do |domain_object, dto|
-          link_domain_object(domain_object, dto)
+        domain_objects.map do |domain_object|
+          build_dto(domain_object)
         end
-        dict.values
       end
 
       #TEST_ME
@@ -70,19 +68,12 @@ module Mongobzar
 
       #TEST_ME
       def build_domain_objects(dtos)
-        mapped_collection = build_mapped_collection
-        mapped_collection.load_dtos(dtos)
-        mapped_collection.domain_objects
+        dtos.map do |dto|
+          build_domain_object(dto)
+        end
       end
 
       private
-        def build_dtos_collection(domain_objects)
-          mapped_collection = build_mapped_collection
-          mapped_collection.load_domain_objects(domain_objects)
-          dict = mapped_collection.dict
-          dtos = dict.values
-          [dict, dtos]
-        end
 
         def update_dtos_collection(dtos, domain_objects)
           mapped_collection = build_mapped_collection
