@@ -1,11 +1,8 @@
 module Mongobzar
   module Mapping
-    module BaseMapper
+    class BaseMapper
       def initialize(database_name)
-        @connection = Mongo::Connection.new
-        @db = @connection.db(database_name)
         @database_name = database_name
-        @mongo_collection = @db.collection(mongo_collection_name, safe: true)
       end
 
       def clear_everything!
@@ -13,7 +10,18 @@ module Mongobzar
       end
 
       protected
-        attr_reader :mongo_collection
+        def mongo_collection
+          @mongo_collection ||= db.collection(mongo_collection_name, safe: true)
+        end
+
+        def db
+          @db ||= connection.db(database_name)
+        end
+
+        def connection
+          @connection ||= Mongo::Connection.new
+        end
+
         attr_reader :database_name
     end
   end

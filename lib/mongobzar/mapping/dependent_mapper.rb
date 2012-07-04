@@ -3,9 +3,7 @@ require 'mongobzar/mapping/base_mapper'
 
 module Mongobzar
   module Mapping
-    class DependentMapper
-      include BaseMapper
-
+    class DependentMapper < BaseMapper
       attr_accessor :foreign_key
 
       def insert_dependent_collection(parent, domain_objects)

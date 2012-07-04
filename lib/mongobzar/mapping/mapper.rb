@@ -4,9 +4,7 @@ require 'mongobzar/mapping/base_mapper'
 
 module Mongobzar
   module Mapping
-    class Mapper
-      include BaseMapper
-
+    class Mapper < BaseMapper
       def all
         dtos = mongo_collection.find
         dtos.map do |dto|
