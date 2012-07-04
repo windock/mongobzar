@@ -49,7 +49,7 @@ module Mongobzar
       end
 
       def mapping_strategy
-        OwnerMappingStrategy.new(@pet_mapper)
+        OwnerMappingStrategy.new(pet_mapper)
       end
 
       def insert(owner)
@@ -69,7 +69,7 @@ module Mongobzar
 
       private
         def pet_mapper
-          @pet_mapper ||= PetMapper.new(database_name)
+          PetMapper.new(database_name)
         end
     end
 
@@ -88,9 +88,8 @@ module Mongobzar
     end
 
     class PetMapper < Mongobzar::Mapping::DependentMapper
-      def initialize(database_name)
-        super
-        self.foreign_key = 'owner_id'
+      def foreign_key
+        'owner_id'
       end
 
       def mongo_collection_name

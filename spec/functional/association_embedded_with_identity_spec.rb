@@ -25,25 +25,28 @@ module Mongobzar
       end
 
       def build_domain_object!(person, dto)
-        @address_mapping_strategy.build_domain_objects(dto['addresses']).each do |address|
+        address_mapping_strategy.build_domain_objects(dto['addresses']).each do |address|
           person.add_address(address)
         end
-        person.work_address = @address_mapping_strategy.build_domain_object(
+        person.work_address = address_mapping_strategy.build_domain_object(
           dto['work_address']
         )
       end
 
       def build_dto!(dto, person)
         dto['addresses'] = person.addresses.map do |address|
-          address_dto = @address_mapping_strategy.build_dto(address)
+          address_dto = address_mapping_strategy.build_dto(address)
           address.id = address_dto['_id']
           address_dto
         end
         if person.work_address
-          dto['work_address'] = @address_mapping_strategy.build_dto(person.work_address)
+          dto['work_address'] = address_mapping_strategy.build_dto(person.work_address)
           person.work_address.id = dto['work_address']['_id']
         end
       end
+
+      private
+        attr_reader :address_mapping_strategy
     end
 
     class PersonHavingAddressesWithIdMapper < Mongobzar::Mapping::Mapper

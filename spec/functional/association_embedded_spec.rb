@@ -15,15 +15,13 @@ module Mongobzar
     end
 
     class PersonMappingStrategy < MappingStrategy::EntityMappingStrategy
-      def initialize(address_mapper)
-        @address_mapper = address_mapper
+      def initialize(address_mapping_strategy)
+        @address_mapping_strategy = address_mapping_strategy
       end
 
       def build_dto!(dto, person)
-        dto['work_address'] = @address_mapper.build_dto(person.work_address)
-        dto['addresses'] = @address_mapper.build_dtos(
-          person.addresses
-        )
+        dto['work_address'] = address_mapping_strategy.build_dto(person.work_address)
+        dto['addresses'] = address_mapping_strategy.build_dtos(person.addresses)
       end
 
       def build_new(dto={})
@@ -31,11 +29,14 @@ module Mongobzar
       end
 
       def build_domain_object!(person, dto)
-        @address_mapper.build_domain_objects(dto['addresses']).each do |address|
+        address_mapping_strategy.build_domain_objects(dto['addresses']).each do |address|
           person.add_address(address)
         end
-        person.work_address = @address_mapper.build_domain_object(dto['work_address'])
+        person.work_address = address_mapping_strategy.build_domain_object(dto['work_address'])
       end
+
+      private
+        attr_reader :address_mapping_strategy
     end
 
     class PersonMapper < Mongobzar::Mapping::Mapper
