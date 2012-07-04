@@ -19,10 +19,6 @@ module Mongobzar
         strategy_for_domain_object(domain_object).link_domain_object(domain_object, dto)
       end
 
-      def build_new(dto)
-        strategy_for_dto(dto).build_new(dto)
-      end
-
       def build_domain_object(dto)
         strategy_for_dto(dto).build_domain_object(dto)
       end
@@ -38,8 +34,8 @@ module Mongobzar
           strategies.find { |strategy| strategy.type_code == dto['type'] }
         end
 
-        def strategy_for_domain_object(role)
-          strategies.find { |strategy| role.kind_of?(strategy.domain_object_class) }
+        def strategy_for_domain_object(domain_object)
+          strategies.find { |strategy| domain_object.kind_of?(strategy.domain_object_class) }
         end
 
       private
