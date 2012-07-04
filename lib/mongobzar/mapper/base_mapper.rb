@@ -1,5 +1,5 @@
 module Mongobzar
-  module Mapping
+  module Mapper
     class BaseMapper
       def initialize(database_name)
         @database_name = database_name

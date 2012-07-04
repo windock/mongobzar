@@ -1,5 +1,5 @@
 require_relative 'spec_helper'
-require 'mongobzar/mapping/mapper'
+require 'mongobzar/mapper/mapper'
 require 'mongobzar/mapping_strategy/entity_mapping_strategy'
 
 module Mongobzar
@@ -24,7 +24,7 @@ module Mongobzar
       end
     end
 
-    class SimpleObjectMapper < Mongobzar::Mapping::Mapper
+    class SimpleObjectMapper < Mongobzar::Mapper::Mapper
       def mongo_collection_name
         'simple_objects'
       end
@@ -79,7 +79,7 @@ describe 'CRUD operations' do
   describe 'basic setup' do
     it 'shows informative error message if collection name is not provided' do
       pending
-      class MapperWithoutCollection < Mongobzar::Mapping::Mapper
+      class MapperWithoutCollection < Mongobzar::Mapper::Mapper
         def build_new(dto={})
         end
       end
@@ -92,7 +92,7 @@ describe 'CRUD operations' do
 
     it 'shows informative error message if build_new does not return object' do
       pending
-      class MapperWithWrongBuildNew < Mongobzar::Mapping::Mapper
+      class MapperWithWrongBuildNew < Mongobzar::Mapper::Mapper
       end
 
       mapper = MapperWithWrongBuildNew.new('any_database_name')
@@ -161,7 +161,7 @@ describe 'CRUD operations' do
     end
 
     it 'raises DocumentNotFound if document with such id was not found' do
-      expect { @mapper.find(BSON::ObjectId.new) }.to raise_error(Mongobzar::Mapping::DocumentNotFound)
+      expect { @mapper.find(BSON::ObjectId.new) }.to raise_error(Mongobzar::Mapper::DocumentNotFound)
     end
   end
 

@@ -1,7 +1,6 @@
 require_relative 'spec_helper'
 require_relative '../test/person'
-require 'mongobzar/mapping/mapper'
-require 'mongobzar/mapping/mapped_collection'
+require 'mongobzar/mapper/mapper'
 require 'mongobzar/mapping_strategy/simple_mapping_strategy'
 require 'mongobzar/mapping_strategy/entity_mapping_strategy'
 
@@ -49,7 +48,7 @@ module Mongobzar
         attr_reader :address_mapping_strategy
     end
 
-    class PersonHavingAddressesWithIdMapper < Mongobzar::Mapping::Mapper
+    class PersonHavingAddressesWithIdMapper < Mongobzar::Mapper::Mapper
       def mongo_collection_name
         'people_having_addresses_with_id'
       end

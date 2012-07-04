@@ -1,6 +1,6 @@
 require_relative 'spec_helper'
-require 'mongobzar/mapping/mapper'
-require 'mongobzar/mapping/dependent_mapper'
+require 'mongobzar/mapper/mapper'
+require 'mongobzar/mapper/dependent_mapper'
 require 'mongobzar/mapping_strategy/value_object_mapping_strategy'
 require 'mongobzar/mapping_strategy/entity_mapping_strategy'
 
@@ -43,7 +43,7 @@ module Mongobzar
       end
     end
 
-    class OwnerMapper < Mongobzar::Mapping::Mapper
+    class OwnerMapper < Mongobzar::Mapper::Mapper
       def mongo_collection_name
         'owners'
       end
@@ -87,7 +87,7 @@ module Mongobzar
       end
     end
 
-    class PetMapper < Mongobzar::Mapping::DependentMapper
+    class PetMapper < Mongobzar::Mapper::DependentMapper
       def foreign_key
         'owner_id'
       end

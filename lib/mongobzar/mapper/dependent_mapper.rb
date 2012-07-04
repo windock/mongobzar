@@ -1,8 +1,8 @@
-require 'mongobzar/mapping/mapped_collection'
-require 'mongobzar/mapping/base_mapper'
+require 'mongobzar/utility/mapped_collection'
+require 'mongobzar/mapper/base_mapper'
 
 module Mongobzar
-  module Mapping
+  module Mapper
     class DependentMapper < BaseMapper
       attr_accessor :foreign_key
 

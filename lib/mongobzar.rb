@@ -4,10 +4,10 @@ module Mongobzar
   # Your code goes here...
 end
 
-require 'mongobzar/mapping/dependent_mapper'
-require 'mongobzar/mapping/document_not_found'
-require 'mongobzar/mapping/mapped_collection'
-require 'mongobzar/mapping/mapper'
+require 'mongobzar/mapper/dependent_mapper'
+require 'mongobzar/mapper/document_not_found'
+require 'mongobzar/mapper/mapped_collection'
+require 'mongobzar/mapper/mapper'
 
 require 'mongobzar/mapping_strategy/entity_mapping_strategy'
 require 'mongobzar/mapping_strategy/value_object_mapping_strategy'
