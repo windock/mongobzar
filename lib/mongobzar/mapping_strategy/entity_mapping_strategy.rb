@@ -1,4 +1,4 @@
-require 'mongobzar/bson_id_generator'
+require 'mongobzar/utility/bson_id_generator'
 
 module Mongobzar
   module MappingStrategy
@@ -42,7 +42,7 @@ module Mongobzar
       end
 
       def id_generator
-        @id_generator ||= BSONIdGenerator.new
+        @id_generator ||= Utility::BSONIdGenerator.new
       end
 
       attr_writer :id_generator

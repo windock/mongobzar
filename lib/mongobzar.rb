@@ -14,4 +14,4 @@ require 'mongobzar/mapping_strategy/value_object_mapping_strategy'
 require 'mongobzar/mapping_strategy/simple_mapping_strategy'
 require 'mongobzar/mapping_strategy/polymorphic_mapping_strategy'
 
-require 'mongobzar/bson_id_generator'
+require 'mongobzar/utility/bson_id_generator'

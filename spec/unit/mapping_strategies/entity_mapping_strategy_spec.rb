@@ -1,5 +1,5 @@
 require 'mongobzar/mapping_strategy/entity_mapping_strategy'
-require 'mongobzar/bson_id_generator'
+require 'mongobzar/utility/bson_id_generator'
 
 module Mongobzar
   module MappingStrategy
@@ -55,7 +55,7 @@ module Mongobzar
 
         context '#id_generator' do
           it 'has default value of BSONIdGenerator' do
-            subject.id_generator.should be_kind_of(BSONIdGenerator)
+            subject.id_generator.should be_kind_of(Utility::BSONIdGenerator)
           end
         end
 
