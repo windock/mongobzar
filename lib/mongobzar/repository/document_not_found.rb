@@ -1,5 +1,5 @@
 module Mongobzar
-  module Mapper
+  module Repository
     class DocumentNotFound < StandardError; end
   end
 end

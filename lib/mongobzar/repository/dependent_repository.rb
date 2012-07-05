@@ -1,9 +1,9 @@
 require 'mongobzar/utility/mapped_collection'
-require 'mongobzar/mapper/base_mapper'
+require 'mongobzar/repository/base_repository'
 
 module Mongobzar
-  module Mapper
-    class DependentMapper < BaseMapper
+  module Repository
+    class DependentRepository < BaseRepository
       attr_accessor :foreign_key
 
       def insert_dependent_collection(parent, domain_objects)

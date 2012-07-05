@@ -1,10 +1,10 @@
 require 'mongo'
-require 'mongobzar/mapper/document_not_found'
-require 'mongobzar/mapper/base_mapper'
+require 'mongobzar/repository/document_not_found'
+require 'mongobzar/repository/base_repository'
 
 module Mongobzar
-  module Mapper
-    class Mapper < BaseMapper
+  module Repository
+    class Repository < BaseRepository
       def all
         dtos = mongo_collection.find
         dtos.map do |dto|

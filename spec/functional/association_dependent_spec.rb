@@ -1,6 +1,6 @@
 require_relative 'spec_helper'
-require 'mongobzar/mapper/mapper'
-require 'mongobzar/mapper/dependent_mapper'
+require 'mongobzar/repository/repository'
+require 'mongobzar/repository/dependent_repository'
 require 'mongobzar/mapping_strategy/value_object_mapping_strategy'
 require 'mongobzar/mapping_strategy/entity_mapping_strategy'
 
@@ -28,8 +28,8 @@ module Mongobzar
     end
 
     class OwnerMappingStrategy < MappingStrategy::EntityMappingStrategy
-      def initialize(pet_mapper)
-        @pet_mapper = pet_mapper
+      def initialize(pet_repository)
+        @pet_repository = pet_repository
       end
 
       def build_new(dto)
@@ -37,39 +37,39 @@ module Mongobzar
       end
 
       def build_domain_object!(owner, dto)
-        @pet_mapper.find_dependent_collection(owner).each do |pet|
+        @pet_repository.find_dependent_collection(owner).each do |pet|
           owner.add_pet(pet)
         end
       end
     end
 
-    class OwnerMapper < Mongobzar::Mapper::Mapper
+    class OwnerRepository < Mongobzar::Repository::Repository
       def mongo_collection_name
         'owners'
       end
 
       def mapping_strategy
-        OwnerMappingStrategy.new(pet_mapper)
+        OwnerMappingStrategy.new(pet_repository)
       end
 
       def insert(owner)
         super
-        pet_mapper.insert_dependent_collection(owner, owner.pets)
+        pet_repository.insert_dependent_collection(owner, owner.pets)
       end
 
       def update(owner)
         super
-        pet_mapper.update_dependent_collection(owner, owner.pets)
+        pet_repository.update_dependent_collection(owner, owner.pets)
       end
 
       def clear_everything!
         super
-        pet_mapper.clear_everything!
+        pet_repository.clear_everything!
       end
 
       private
-        def pet_mapper
-          PetMapper.new(database_name)
+        def pet_repository
+          PetRepository.new(database_name)
         end
     end
 
@@ -87,7 +87,7 @@ module Mongobzar
       end
     end
 
-    class PetMapper < Mongobzar::Mapper::DependentMapper
+    class PetRepository < Mongobzar::Repository::DependentRepository
       def foreign_key
         'owner_id'
       end
@@ -133,8 +133,8 @@ describe 'Dependent association' do
   before do
     setup_connection
     @owners_collection = @db.collection('owners')
-    @owner_mapper = OwnerMapper.new('testing')
-    @owner_mapper.clear_everything!
+    @owner_repository = OwnerRepository.new('testing')
+    @owner_repository.clear_everything!
 
     @pets_collection = @db.collection('pets')
 
@@ -153,7 +153,7 @@ describe 'Dependent association' do
     it 'puts dependent documents to separate collection' do
       @owner.add_pet(@pet)
       @owner.add_pet(@pet2)
-      @owner_mapper.insert(@owner)
+      @owner_repository.insert(@owner)
       @matcher.assert_dependent_persisted([@pet, @pet2], @owner)
     end
   end
@@ -162,21 +162,21 @@ describe 'Dependent association' do
     describe 'updates dependent documents in separate collection' do
       describe 'creates new' do
         it 'works if was empty' do
-          @owner_mapper.insert(@owner)
+          @owner_repository.insert(@owner)
 
           @owner.add_pet(@pet)
           @owner.add_pet(@pet2)
 
-          @owner_mapper.update(@owner)
+          @owner_repository.update(@owner)
           @matcher.assert_dependent_persisted([@pet, @pet2], @owner)
         end
 
         it 'works if was not empty' do
           @owner.add_pet(@pet)
-          @owner_mapper.insert(@owner)
+          @owner_repository.insert(@owner)
 
           @owner.add_pet(@pet2)
-          @owner_mapper.update(@owner)
+          @owner_repository.update(@owner)
           @matcher.assert_dependent_persisted([@pet, @pet2], @owner)
         end
       end
@@ -185,21 +185,21 @@ describe 'Dependent association' do
         [@pet, @pet2, @pet3, @pet4].each do |pet|
           @owner.add_pet(pet)
         end
-        @owner_mapper.insert(@owner)
+        @owner_repository.insert(@owner)
 
         [@pet2, @pet4].each do |pet|
           @owner.remove_pet(pet)
         end
-        @owner_mapper.update(@owner)
+        @owner_repository.update(@owner)
         @matcher.assert_dependent_persisted([@pet, @pet3], @owner)
       end
 
       it 'updates existing' do
         @owner.add_pet(@pet)
-        @owner_mapper.insert(@owner)
+        @owner_repository.insert(@owner)
 
         @pet.name = 'new_name'
-        @owner_mapper.update(@owner)
+        @owner_repository.update(@owner)
         @matcher.assert_dependent_persisted([@pet], @owner)
       end
     end
@@ -211,10 +211,10 @@ describe 'Dependent association' do
 
         @owner2.add_pet(@pet3)
 
-        @owner_mapper.insert(@owner)
-        @owner_mapper.insert(@owner2)
+        @owner_repository.insert(@owner)
+        @owner_repository.insert(@owner2)
 
-        @matcher.assert_loaded([@pet, @pet2], @owner_mapper.find(@owner.id).pets)
+        @matcher.assert_loaded([@pet, @pet2], @owner_repository.find(@owner.id).pets)
       end
     end
   end

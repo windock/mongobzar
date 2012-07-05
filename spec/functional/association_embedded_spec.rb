@@ -1,6 +1,6 @@
 require_relative 'spec_helper'
 require_relative '../test/person'
-require 'mongobzar/mapper/mapper'
+require 'mongobzar/repository/repository'
 require 'mongobzar/mapping_strategy/value_object_mapping_strategy'
 require 'mongobzar/mapping_strategy/simple_mapping_strategy'
 
@@ -39,7 +39,7 @@ module Mongobzar
         attr_reader :address_mapping_strategy
     end
 
-    class PersonMapper < Mongobzar::Mapper::Mapper
+    class PersonRepository < Mongobzar::Repository::Repository
       def mongo_collection_name
         'people'
       end
@@ -80,8 +80,8 @@ describe 'Embedded association' do
   before do
     setup_connection
     @people_collection = @db.collection('people')
-    @person_mapper = PersonMapper.new('testing')
-    @person_mapper.clear_everything!
+    @person_repository = PersonRepository.new('testing')
+    @person_repository.clear_everything!
 
     @person = Person.new
     @matcher = AddressMappingMatcher.new(@people_collection)
@@ -99,7 +99,7 @@ describe 'Embedded association' do
     describe 'insert' do
       it 'puts embedded document to the parent document' do
         @person.work_address = @work_address
-        @person_mapper.insert(@person)
+        @person_repository.insert(@person)
         @matcher.assert_single_persisted(@work_address)
       end
     end
@@ -107,9 +107,9 @@ describe 'Embedded association' do
     describe 'update' do
       it 'updates embedded document' do
         @person.work_address = @work_address
-        @person_mapper.insert(@person)
+        @person_repository.insert(@person)
         @work_address.street = 'New street'
-        @person_mapper.update(@person)
+        @person_repository.update(@person)
         @matcher.assert_single_persisted(@work_address)
       end
     end
@@ -117,8 +117,8 @@ describe 'Embedded association' do
     describe 'find' do
       it 'returns domain object with related domain object' do
         @person.work_address = @work_address
-        @person_mapper.insert(@person)
-        @matcher.assert_single_loaded(@work_address, @person_mapper.find(@person.id).work_address)
+        @person_repository.insert(@person)
+        @matcher.assert_single_loaded(@work_address, @person_repository.find(@person.id).work_address)
       end
     end
   end
@@ -135,7 +135,7 @@ describe 'Embedded association' do
       it 'puts embedded documents to the parent document' do
         @person.add_address(@address)
         @person.add_address(@address2)
-        @person_mapper.insert(@person)
+        @person_repository.insert(@person)
         @matcher.assert_persisted([@address, @address2])
       end
     end
@@ -144,19 +144,19 @@ describe 'Embedded association' do
       describe 'update embedded documents' do
         describe 'creates new' do
           it 'works if was empty' do
-            @person_mapper.insert(@person)
+            @person_repository.insert(@person)
             @person.add_address(@address)
             @person.add_address(@address2)
-            @person_mapper.update(@person)
+            @person_repository.update(@person)
             @matcher.assert_persisted([@address, @address2])
           end
 
           it 'works is was not empty' do
             @person.add_address(@address)
-            @person_mapper.insert(@person)
+            @person_repository.insert(@person)
 
             @person.add_address(@address2)
-            @person_mapper.update(@person)
+            @person_repository.update(@person)
 
             @matcher.assert_persisted([@address, @address2])
           end
@@ -166,20 +166,20 @@ describe 'Embedded association' do
           [@address, @address2, @address3, @address4].each do |address|
             @person.add_address(address)
           end
-          @person_mapper.insert(@person)
+          @person_repository.insert(@person)
           @person.remove_address(@address)
           @person.remove_address(@address3)
-          @person_mapper.update(@person)
+          @person_repository.update(@person)
 
           @matcher.assert_persisted([@address2, @address4])
         end
 
         it 'updates existing' do
           @person.add_address(@address)
-          @person_mapper.insert(@person)
+          @person_repository.insert(@person)
 
           @address.street = 'new_street'
-          @person_mapper.update(@person)
+          @person_repository.update(@person)
 
           @matcher.assert_persisted([@address])
         end
@@ -190,9 +190,9 @@ describe 'Embedded association' do
       it 'returns domain object with related domain objects' do
         @person.add_address(@address)
         @person.add_address(@address2)
-        @person_mapper.insert(@person)
+        @person_repository.insert(@person)
 
-        @matcher.assert_loaded([@address, @address2], @person_mapper.find(@person.id).addresses)
+        @matcher.assert_loaded([@address, @address2], @person_repository.find(@person.id).addresses)
       end
     end
   end

@@ -1,5 +1,5 @@
 require_relative 'spec_helper'
-require 'mongobzar/mapper/mapper'
+require 'mongobzar/repository/repository'
 require 'mongobzar/mapping_strategy/entity_mapping_strategy'
 
 module Mongobzar
@@ -24,7 +24,7 @@ module Mongobzar
       end
     end
 
-    class SimpleObjectMapper < Mongobzar::Mapper::Mapper
+    class SimpleObjectRepository < Mongobzar::Repository::Repository
       def mongo_collection_name
         'simple_objects'
       end
@@ -63,8 +63,8 @@ describe 'CRUD operations' do
   before do
     setup_connection
     @simple_objects_collection = @db.collection('simple_objects')
-    @mapper = SimpleObjectMapper.new('testing')
-    @mapper.clear_everything!
+    @repository = SimpleObjectRepository.new('testing')
+    @repository.clear_everything!
 
     @so1 = SimpleObject.new
     @so1.name = 'name1'
@@ -79,23 +79,23 @@ describe 'CRUD operations' do
   describe 'basic setup' do
     it 'shows informative error message if collection name is not provided' do
       pending
-      class MapperWithoutCollection < Mongobzar::Mapper::Mapper
+      class RepositoryWithoutCollection < Mongobzar::Repository::Repository
         def build_new(dto={})
         end
       end
 
-      mapper = MapperWithoutCollection.new('any_database_name')
+      repository = RepositoryWithoutCollection.new('any_database_name')
       assert_raises('you should set mongo collection') do
-        mapper.insert(stub)
+        repository.insert(stub)
       end
     end
 
     it 'shows informative error message if build_new does not return object' do
       pending
-      class MapperWithWrongBuildNew < Mongobzar::Mapper::Mapper
+      class RepositoryWithWrongBuildNew < Mongobzar::Repository::Repository
       end
 
-      mapper = MapperWithWrongBuildNew.new('any_database_name')
+      repository = RepositoryWithWrongBuildNew.new('any_database_name')
       assert_raises('build_new should return object with :id= method') do
       end
     end
@@ -103,8 +103,8 @@ describe 'CRUD operations' do
 
   describe 'insert' do
     it 'puts documents to mongo collection' do
-      @mapper.insert(@so1)
-      @mapper.insert(@so2)
+      @repository.insert(@so1)
+      @repository.insert(@so2)
 
       @matcher.assert_persisted([@so1, @so2])
     end
@@ -116,56 +116,56 @@ describe 'CRUD operations' do
 
   describe 'update' do
     it 'updates document' do
-      @mapper.insert(@so1)
+      @repository.insert(@so1)
 
       @so1.name = 'new_name'
-      @mapper.update(@so1)
+      @repository.update(@so1)
       @matcher.assert_persisted([@so1])
     end
   end
 
   describe 'destroy' do
     it 'removes document from mongo collection' do
-      @mapper.insert(@so1)
-      @mapper.insert(@so2)
+      @repository.insert(@so1)
+      @repository.insert(@so2)
 
-      @mapper.destroy(@so1)
+      @repository.destroy(@so1)
       @matcher.assert_persisted([@so2])
     end
   end
 
   describe 'all' do
     it 'returns all domain objects' do
-      @mapper.insert(@so1)
-      @mapper.insert(@so2)
+      @repository.insert(@so1)
+      @repository.insert(@so2)
 
-      @matcher.assert_loaded([@so1, @so2], @mapper.all)
+      @matcher.assert_loaded([@so1, @so2], @repository.all)
     end
   end
 
   describe 'find' do
     it 'returns domain object by BSON::ObjectId' do
-      @mapper.insert(@so1)
-      @mapper.insert(@so2)
+      @repository.insert(@so1)
+      @repository.insert(@so2)
 
-      found_so1 = @mapper.find(@so1.id)
-      found_so2 = @mapper.find(@so2.id)
+      found_so1 = @repository.find(@so1.id)
+      found_so2 = @repository.find(@so2.id)
 
       @matcher.assert_loaded([@so1, @so2], [found_so1, found_so2])
     end
 
     it 'returns domain object by BSON::ObjectId as string' do
-      @mapper.insert(@so1)
-      found_so1 = @mapper.find(@so1.id.to_s)
+      @repository.insert(@so1)
+      found_so1 = @repository.find(@so1.id.to_s)
       @matcher.assert_loaded([@so1], [found_so1])
     end
 
     it 'raises DocumentNotFound if document with such id was not found' do
-      expect { @mapper.find(BSON::ObjectId.new) }.to raise_error(Mongobzar::Mapper::DocumentNotFound)
+      expect { @repository.find(BSON::ObjectId.new) }.to raise_error(Mongobzar::Repository::DocumentNotFound)
     end
   end
 
-  it 'has no duplication with DependentMapper about collection management' do
+  it 'has no duplication with DependentRepository about collection management' do
     pending
   end
 end
