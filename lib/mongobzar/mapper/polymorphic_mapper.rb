@@ -1,6 +1,6 @@
 module Mongobzar
-  module MappingStrategy
-    class PolymorphicMappingStrategy
+  module Mapper
+    class PolymorphicMapper
       def initialize(strategies)
         @strategies = strategies
       end

@@ -1,8 +1,8 @@
-require 'mongobzar/mapping_strategy/value_object_mapping_strategy'
+require 'mongobzar/mapper/value_object_mapper'
 
 module Mongobzar
-  module MappingStrategy
-    class SimpleMappingStrategy < ValueObjectMappingStrategy
+  module Mapper
+    class SimpleMapper < ValueObjectMapper
       def initialize(build_new, attribute_names=[])
         @build_new = build_new
         @method_names = attribute_names

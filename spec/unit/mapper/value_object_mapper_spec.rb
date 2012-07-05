@@ -1,7 +1,7 @@
-require 'mongobzar/mapping_strategy/value_object_mapping_strategy'
+require 'mongobzar/mapper/value_object_mapper'
 
 module Mongobzar
-  module MappingStrategy
+  module Mapper
     module Test
       class Sample
         def initialize(string=nil, number=nil)
@@ -16,7 +16,7 @@ module Mongobzar
         attr_accessor :string, :number
       end
 
-      class SampleMappingStrategy < ValueObjectMappingStrategy
+      class SampleMapper < ValueObjectMapper
         def build_new(dto)
           Sample.new
         end
@@ -37,8 +37,8 @@ module Mongobzar
         end
       end
 
-      describe ValueObjectMappingStrategy do
-        subject { SampleMappingStrategy.new }
+      describe ValueObjectMapper do
+        subject { SampleMapper.new }
         let(:sample_string) { 'sample_string' }
         let(:sample_number) { 5 }
         let(:sample_dto) do

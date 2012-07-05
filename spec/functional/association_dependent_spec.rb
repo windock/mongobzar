@@ -1,8 +1,8 @@
 require_relative 'spec_helper'
 require 'mongobzar/repository/repository'
 require 'mongobzar/repository/dependent_repository'
-require 'mongobzar/mapping_strategy/value_object_mapping_strategy'
-require 'mongobzar/mapping_strategy/entity_mapping_strategy'
+require 'mongobzar/mapper/value_object_mapper'
+require 'mongobzar/mapper/entity_mapper'
 
 module Mongobzar
   module Test
@@ -27,7 +27,7 @@ module Mongobzar
       attr_accessor :id, :name, :created_at
     end
 
-    class OwnerMappingStrategy < MappingStrategy::EntityMappingStrategy
+    class OwnerMapper < Mapper::EntityMapper
       def initialize(pet_repository)
         @pet_repository = pet_repository
       end
@@ -48,8 +48,8 @@ module Mongobzar
         'owners'
       end
 
-      def mapping_strategy
-        OwnerMappingStrategy.new(pet_repository)
+      def mapper
+        OwnerMapper.new(pet_repository)
       end
 
       def insert(owner)
@@ -73,7 +73,7 @@ module Mongobzar
         end
     end
 
-    class PetMappingStrategy < MappingStrategy::EntityMappingStrategy
+    class PetMapper < Mapper::EntityMapper
       def build_new(dto={})
         Pet.new
       end
@@ -96,8 +96,8 @@ module Mongobzar
         'pets'
       end
 
-      def mapping_strategy
-        PetMappingStrategy.new
+      def mapper
+        PetMapper.new
       end
     end
 

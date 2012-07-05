@@ -1,8 +1,8 @@
 require_relative 'spec_helper'
 require_relative '../test/person'
 require 'mongobzar/repository/repository'
-require 'mongobzar/mapping_strategy/value_object_mapping_strategy'
-require 'mongobzar/mapping_strategy/simple_mapping_strategy'
+require 'mongobzar/mapper/value_object_mapper'
+require 'mongobzar/mapper/simple_mapper'
 
 module Mongobzar
   module Test
@@ -14,14 +14,14 @@ module Mongobzar
       end
     end
 
-    class PersonMappingStrategy < MappingStrategy::EntityMappingStrategy
-      def initialize(address_mapping_strategy)
-        @address_mapping_strategy = address_mapping_strategy
+    class PersonMapper < Mapper::EntityMapper
+      def initialize(address_mapper)
+        @address_mapper = address_mapper
       end
 
       def build_dto!(dto, person)
-        dto['work_address'] = address_mapping_strategy.build_dto(person.work_address)
-        dto['addresses'] = address_mapping_strategy.build_dtos(person.addresses)
+        dto['work_address'] = address_mapper.build_dto(person.work_address)
+        dto['addresses'] = address_mapper.build_dtos(person.addresses)
       end
 
       def build_new(dto={})
@@ -29,14 +29,14 @@ module Mongobzar
       end
 
       def build_domain_object!(person, dto)
-        address_mapping_strategy.build_domain_objects(dto['addresses']).each do |address|
+        address_mapper.build_domain_objects(dto['addresses']).each do |address|
           person.add_address(address)
         end
-        person.work_address = address_mapping_strategy.build_domain_object(dto['work_address'])
+        person.work_address = address_mapper.build_domain_object(dto['work_address'])
       end
 
       private
-        attr_reader :address_mapping_strategy
+        attr_reader :address_mapper
     end
 
     class PersonRepository < Mongobzar::Repository::Repository
@@ -44,12 +44,12 @@ module Mongobzar
         'people'
       end
 
-      def mapping_strategy
-        PersonMappingStrategy.new(address_mapping_strategy)
+      def mapper
+        PersonMapper.new(address_mapper)
       end
 
-      def address_mapping_strategy
-        MappingStrategy::SimpleMappingStrategy.new(->(dto) { Address.new(dto['street']) }, [:street])
+      def address_mapper
+        Mapper::SimpleMapper.new(->(dto) { Address.new(dto['street']) }, [:street])
       end
     end
 

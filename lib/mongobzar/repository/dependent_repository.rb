@@ -20,7 +20,7 @@ module Mongobzar
 
       def find_dependent_collection(parent)
         dtos = dependent_dtos_cursor(parent)
-        mapping_strategy.build_domain_objects(dtos)
+        mapper.build_domain_objects(dtos)
       end
 
       def dependent_dtos_cursor(domain_object)
@@ -34,9 +34,9 @@ module Mongobzar
 
       def build_dtos_and_link(parent, domain_objects)
         domain_objects.map do |domain_object|
-          dto = mapping_strategy.build_dto(domain_object)
+          dto = mapper.build_dto(domain_object)
           set_foreign_key!(dto, parent)
-          mapping_strategy.link_domain_object(domain_object, dto)
+          mapper.link_domain_object(domain_object, dto)
           dto
         end
       end

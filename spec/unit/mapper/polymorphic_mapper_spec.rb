@@ -1,8 +1,8 @@
-require 'mongobzar/mapping_strategy/polymorphic_mapping_strategy'
+require 'mongobzar/mapper/polymorphic_mapper'
 
 module Mongobzar
-  module MappingStrategy
-    describe PolymorphicMappingStrategy do
+  module Mapper
+    describe PolymorphicMapper do
       class DomainObject1
       end
 
@@ -14,7 +14,7 @@ module Mongobzar
 
       let(:strategy1) { stub }
       let(:strategy2) { stub }
-      subject { PolymorphicMappingStrategy.new([strategy1, strategy2]) }
+      subject { PolymorphicMapper.new([strategy1, strategy2]) }
 
       context 'building dtos' do
         let(:strategy1) do

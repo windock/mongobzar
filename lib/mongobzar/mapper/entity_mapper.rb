@@ -1,8 +1,8 @@
 require 'mongobzar/utility/bson_id_generator'
 
 module Mongobzar
-  module MappingStrategy
-    class EntityMappingStrategy
+  module Mapper
+    class EntityMapper
       def build_domain_object(dto)
         return nil if dto.nil?
         domain_object = build_new(dto)

@@ -1,6 +1,6 @@
 module Mongobzar
-  module MappingStrategy
-    class ValueObjectMappingStrategy
+  module Mapper
+    class ValueObjectMapper
       def build_dtos(domain_objects)
         domain_objects.map { |obj| build_dto(obj) }
       end

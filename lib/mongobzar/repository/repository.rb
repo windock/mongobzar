@@ -8,12 +8,12 @@ module Mongobzar
       def all
         dtos = mongo_collection.find
         dtos.map do |dto|
-          mapping_strategy.build_domain_object(dto)
+          mapper.build_domain_object(dto)
         end
       end
 
       def find(id)
-        mapping_strategy.build_domain_object(find_dto(id))
+        mapper.build_domain_object(find_dto(id))
       end
 
       def find_dto(id)
@@ -30,19 +30,19 @@ module Mongobzar
       end
 
       def insert(domain_object)
-        dto = mapping_strategy.build_dto(domain_object)
+        dto = mapper.build_dto(domain_object)
         insert_dto(dto)
         update_domain_object_after_insert(domain_object, dto)
       end
 
       def update_domain_object_after_insert(domain_object, dto)
-        mapping_strategy.link_domain_object(domain_object, dto)
+        mapper.link_domain_object(domain_object, dto)
       end
       protected :update_domain_object_after_insert
 
       def update(domain_object)
         dto = find_dto(domain_object.id)
-        mapping_strategy.update_dto!(dto, domain_object)
+        mapper.update_dto!(dto, domain_object)
         mongo_collection.update({ _id: dto['_id']}, dto)
       end
 

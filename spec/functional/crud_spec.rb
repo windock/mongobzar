@@ -1,6 +1,6 @@
 require_relative 'spec_helper'
 require 'mongobzar/repository/repository'
-require 'mongobzar/mapping_strategy/entity_mapping_strategy'
+require 'mongobzar/mapper/entity_mapper'
 
 module Mongobzar
   module Test
@@ -8,7 +8,7 @@ module Mongobzar
       attr_accessor :id, :name, :description
     end
 
-    class SimpleObjectMappingStrategy < MappingStrategy::EntityMappingStrategy
+    class SimpleObjectMapper < Mapper::EntityMapper
       def build_domain_object!(simple_object, dto)
         simple_object.name = dto['name']
         simple_object.description = dto['description']
@@ -29,8 +29,8 @@ module Mongobzar
         'simple_objects'
       end
 
-      def mapping_strategy
-        SimpleObjectMappingStrategy.new
+      def mapper
+        SimpleObjectMapper.new
       end
     end
 

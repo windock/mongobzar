@@ -1,8 +1,8 @@
 require_relative 'spec_helper'
 require_relative '../test/person'
 require 'mongobzar/repository/repository'
-require 'mongobzar/mapping_strategy/simple_mapping_strategy'
-require 'mongobzar/mapping_strategy/entity_mapping_strategy'
+require 'mongobzar/mapper/simple_mapper'
+require 'mongobzar/mapper/entity_mapper'
 
 module Mongobzar
   module Test
@@ -14,9 +14,9 @@ module Mongobzar
       end
     end
 
-    class PersonHavingAddressesWithIdMappingStrategy < MappingStrategy::EntityMappingStrategy
-      def initialize(address_mapping_strategy)
-        @address_mapping_strategy = address_mapping_strategy
+    class PersonHavingAddressesWithIdMapper < Mapper::EntityMapper
+      def initialize(address_mapper)
+        @address_mapper = address_mapper
       end
 
       def build_new(dto)
@@ -24,28 +24,28 @@ module Mongobzar
       end
 
       def build_domain_object!(person, dto)
-        address_mapping_strategy.build_domain_objects(dto['addresses']).each do |address|
+        address_mapper.build_domain_objects(dto['addresses']).each do |address|
           person.add_address(address)
         end
-        person.work_address = address_mapping_strategy.build_domain_object(
+        person.work_address = address_mapper.build_domain_object(
           dto['work_address']
         )
       end
 
       def build_dto!(dto, person)
         dto['addresses'] = person.addresses.map do |address|
-          address_dto = address_mapping_strategy.build_dto(address)
+          address_dto = address_mapper.build_dto(address)
           address.id = address_dto['_id']
           address_dto
         end
         if person.work_address
-          dto['work_address'] = address_mapping_strategy.build_dto(person.work_address)
+          dto['work_address'] = address_mapper.build_dto(person.work_address)
           person.work_address.id = dto['work_address']['_id']
         end
       end
 
       private
-        attr_reader :address_mapping_strategy
+        attr_reader :address_mapper
     end
 
     class PersonHavingAddressesWithIdRepository < Mongobzar::Repository::Repository
@@ -53,13 +53,13 @@ module Mongobzar
         'people_having_addresses_with_id'
       end
 
-      def mapping_strategy
-        PersonHavingAddressesWithIdMappingStrategy.new(
-          AddressWithIdMappingStrategy.new)
+      def mapper
+        PersonHavingAddressesWithIdMapper.new(
+          AddressWithIdMapper.new)
       end
     end
 
-    class AddressWithIdMappingStrategy < Mongobzar::MappingStrategy::EntityMappingStrategy
+    class AddressWithIdMapper < Mongobzar::Mapper::EntityMapper
       def build_new(dto)
         AddressWithId.new(dto['street'])
       end
