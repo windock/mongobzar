@@ -1,8 +1,9 @@
 module Mongobzar
   module Repository
     class BaseRepository
-      def initialize(database_name)
+      def initialize(database_name, mongo_collection_name)
         @database_name = database_name
+        @mongo_collection_name = mongo_collection_name
       end
 
       def clear_everything!
@@ -10,6 +11,8 @@ module Mongobzar
       end
 
       protected
+        attr_reader :mongo_collection_name
+
         def mongo_collection
           @mongo_collection ||= db.collection(mongo_collection_name, safe: true)
         end

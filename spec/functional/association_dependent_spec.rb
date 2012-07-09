@@ -44,10 +44,6 @@ module Mongobzar
     end
 
     class OwnerRepository < Mongobzar::Repository::Repository
-      def mongo_collection_name
-        'owners'
-      end
-
       def mapper
         OwnerMapper.new(pet_repository)
       end
@@ -69,7 +65,7 @@ module Mongobzar
 
       private
         def pet_repository
-          PetRepository.new(database_name)
+          PetRepository.new(database_name, 'pets')
         end
     end
 
@@ -90,10 +86,6 @@ module Mongobzar
     class PetRepository < Mongobzar::Repository::DependentRepository
       def foreign_key
         'owner_id'
-      end
-
-      def mongo_collection_name
-        'pets'
       end
 
       def mapper
@@ -133,7 +125,7 @@ describe 'Dependent association' do
   before do
     setup_connection
     @owners_collection = @db.collection('owners')
-    @owner_repository = OwnerRepository.new('testing')
+    @owner_repository = OwnerRepository.new('testing', 'owners')
     @owner_repository.clear_everything!
 
     @pets_collection = @db.collection('pets')

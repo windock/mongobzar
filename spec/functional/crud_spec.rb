@@ -25,10 +25,6 @@ module Mongobzar
     end
 
     class SimpleObjectRepository < Mongobzar::Repository::Repository
-      def mongo_collection_name
-        'simple_objects'
-      end
-
       def mapper
         SimpleObjectMapper.new
       end
@@ -63,7 +59,7 @@ describe 'CRUD operations' do
   before do
     setup_connection
     @simple_objects_collection = @db.collection('simple_objects')
-    @repository = SimpleObjectRepository.new('testing')
+    @repository = SimpleObjectRepository.new('testing', 'simple_objects')
     @repository.clear_everything!
 
     @so1 = SimpleObject.new

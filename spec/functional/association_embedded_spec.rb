@@ -40,10 +40,6 @@ module Mongobzar
     end
 
     class PersonRepository < Mongobzar::Repository::Repository
-      def mongo_collection_name
-        'people'
-      end
-
       def mapper
         PersonMapper.new(address_mapper)
       end
@@ -80,7 +76,7 @@ describe 'Embedded association' do
   before do
     setup_connection
     @people_collection = @db.collection('people')
-    @person_repository = PersonRepository.new('testing')
+    @person_repository = PersonRepository.new('testing', 'people')
     @person_repository.clear_everything!
 
     @person = Person.new

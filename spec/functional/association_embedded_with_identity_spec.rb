@@ -49,10 +49,6 @@ module Mongobzar
     end
 
     class PersonHavingAddressesWithIdRepository < Mongobzar::Repository::Repository
-      def mongo_collection_name
-        'people_having_addresses_with_id'
-      end
-
       def mapper
         PersonHavingAddressesWithIdMapper.new(
           AddressWithIdMapper.new)
@@ -107,7 +103,7 @@ describe 'Embedded association with identity' do
   before do
     setup_connection
     @people_collection = @db.collection('people_having_addresses_with_id')
-    @person_repository = PersonHavingAddressesWithIdRepository.new('testing')
+    @person_repository = PersonHavingAddressesWithIdRepository.new('testing', 'people_having_addresses_with_id')
     @person_repository.clear_everything!
 
     @person = Person.new
