@@ -39,16 +39,6 @@ module Mongobzar
         attr_reader :address_mapper
     end
 
-    class PersonRepository < Mongobzar::Repository::Repository
-      def mapper
-        PersonMapper.new(address_mapper)
-      end
-
-      def address_mapper
-        Mapper::SimpleMapper.new(->(dto) { Address.new(dto['street']) }, [:street])
-      end
-    end
-
     class AddressMappingMatcher < EmbeddedMappingMatcher
       def assert_single_loaded(specification, address)
         address.should_not be_nil
@@ -76,7 +66,9 @@ describe 'Embedded association' do
   before do
     setup_connection
     @people_collection = @db.collection('people')
-    @person_repository = PersonRepository.new('testing', 'people')
+    @person_repository = Repository::Repository.new('testing', 'people')
+    address_mapper = Mapper::SimpleMapper.new(->(dto) { Address.new(dto['street']) }, [:street])
+    @person_repository.mapper = PersonMapper.new(address_mapper)
     @person_repository.clear_everything!
 
     @person = Person.new

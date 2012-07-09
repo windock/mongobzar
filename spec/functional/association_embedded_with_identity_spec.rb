@@ -48,13 +48,6 @@ module Mongobzar
         attr_reader :address_mapper
     end
 
-    class PersonHavingAddressesWithIdRepository < Mongobzar::Repository::Repository
-      def mapper
-        PersonHavingAddressesWithIdMapper.new(
-          AddressWithIdMapper.new)
-      end
-    end
-
     class AddressWithIdMapper < Mongobzar::Mapper::EntityMapper
       def build_new(dto)
         AddressWithId.new(dto['street'])
@@ -103,7 +96,8 @@ describe 'Embedded association with identity' do
   before do
     setup_connection
     @people_collection = @db.collection('people_having_addresses_with_id')
-    @person_repository = PersonHavingAddressesWithIdRepository.new('testing', 'people_having_addresses_with_id')
+    @person_repository = Repository::Repository.new('testing', 'people_having_addresses_with_id')
+    @person_repository.mapper = PersonHavingAddressesWithIdMapper.new(AddressWithIdMapper.new)
     @person_repository.clear_everything!
 
     @person = Person.new

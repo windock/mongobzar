@@ -44,9 +44,7 @@ module Mongobzar
     end
 
     class OwnerRepository < Mongobzar::Repository::Repository
-      def mapper
-        OwnerMapper.new(pet_repository)
-      end
+      attr_accessor :pet_repository
 
       def insert(owner)
         super
@@ -63,10 +61,6 @@ module Mongobzar
         pet_repository.clear_everything!
       end
 
-      private
-        def pet_repository
-          PetRepository.new(database_name, 'pets')
-        end
     end
 
     class PetMapper < Mapper::EntityMapper
@@ -86,10 +80,6 @@ module Mongobzar
     class PetRepository < Mongobzar::Repository::DependentRepository
       def foreign_key
         'owner_id'
-      end
-
-      def mapper
-        PetMapper.new
       end
     end
 
@@ -126,6 +116,10 @@ describe 'Dependent association' do
     setup_connection
     @owners_collection = @db.collection('owners')
     @owner_repository = OwnerRepository.new('testing', 'owners')
+    pet_repository = PetRepository.new('testing', 'pets')
+    pet_repository.mapper = PetMapper.new
+    @owner_repository.pet_repository = pet_repository
+    @owner_repository.mapper = OwnerMapper.new(pet_repository)
     @owner_repository.clear_everything!
 
     @pets_collection = @db.collection('pets')
