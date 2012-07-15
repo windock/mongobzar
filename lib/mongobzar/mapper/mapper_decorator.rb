@@ -3,14 +3,12 @@ require 'mongobzar/mapper/mapper'
 module Mongobzar
   module Mapper
     class MapperDecorator < Mapper
-      def initialize(mapper=nil)
+      def initialize(mapper=Mapper.new)
         @mapper = mapper
       end
 
       def build_new(dto)
-        if mapper
-          mapper.build_new(dto)
-        end
+        mapper.build_new(dto)
       end
 
       def build_domain_object(dto)
@@ -28,21 +26,15 @@ module Mongobzar
       end
 
       def update_dto!(dto, domain_object)
-        if mapper
-          mapper.update_dto!(dto, domain_object)
-        end
+        mapper.update_dto!(dto, domain_object)
       end
 
       def build_dto!(dto, domain_object)
-        if mapper
-          mapper.build_dto!(dto, domain_object)
-        end
+        mapper.build_dto!(dto, domain_object)
       end
 
       def build_domain_object!(domain_object, dto)
-        if mapper
-          mapper.build_domain_object!(domain_object, dto)
-        end
+        mapper.build_domain_object!(domain_object, dto)
       end
 
       protected
