@@ -1,6 +1,7 @@
 module Mongobzar
   module Mapper
-    class ConcreteMapper
+    class Mapper
+
       def build_domain_object!(domain_object, dto)
       end
 

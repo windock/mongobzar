@@ -18,7 +18,7 @@ module Mongobzar
         attr_accessor :string, :id
       end
 
-      class SampleEntityMapper < EntityMapper
+      class SampleEntityMapper
         def build_new(dto)
           SampleWithId.new
         end
@@ -37,7 +37,7 @@ module Mongobzar
       end
 
       describe EntityMapper do
-        subject { SampleEntityMapper.new }
+        subject { EntityMapper.new(SampleEntityMapper.new) }
 
         let(:sample_id) { 'sample_id' }
         let(:sample_string) { 'sample_string' }

@@ -8,7 +8,7 @@ module Mongobzar
       attr_accessor :id, :name, :description
     end
 
-    class SimpleObjectMapper < Mapper::EntityMapper
+    class SimpleObjectMapper < Mapper::Mapper
       def build_domain_object!(simple_object, dto)
         simple_object.name = dto['name']
         simple_object.description = dto['description']
@@ -48,13 +48,14 @@ module Mongobzar
   end
 end
 
-include Mongobzar::Test
+module Mongobzar
+  module Test
 describe 'CRUD operations' do
   before do
     setup_connection
     @simple_objects_collection = @db.collection('simple_objects')
     @repository = Repository::Repository.new('testing', 'simple_objects')
-    @repository.mapper = SimpleObjectMapper.new
+    @repository.mapper = Mapper::EntityMapper.new(SimpleObjectMapper.new)
     @repository.clear_everything!
 
     @so1 = SimpleObject.new
@@ -158,5 +159,7 @@ describe 'CRUD operations' do
 
   it 'has no duplication with DependentRepository about collection management' do
     pending
+  end
+end
   end
 end

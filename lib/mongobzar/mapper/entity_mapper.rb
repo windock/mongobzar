@@ -1,23 +1,17 @@
 require 'mongobzar/utility/bson_id_generator'
-require 'mongobzar/mapper/concrete_mapper'
+require 'mongobzar/mapper/mapper_decorator'
 
 module Mongobzar
   module Mapper
-    class EntityMapper < ConcreteMapper
-      def build_domain_object(dto)
-        return nil if dto.nil?
-        domain_object = build_new(dto)
+    class EntityMapper < MapperDecorator
+      def build_domain_object!(domain_object, dto)
         domain_object.id = dto['_id']
-        build_domain_object!(domain_object, dto)
-        domain_object
+        super
       end
 
-      def build_dto(domain_object)
-        return nil if domain_object.nil?
-        dto = {}
+      def build_dto!(dto, domain_object)
         dto['_id'] = domain_object.id || id_generator.next_id
-        build_dto!(dto, domain_object)
-        dto
+        super
       end
 
       def id_generator

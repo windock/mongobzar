@@ -16,7 +16,7 @@ module Mongobzar
         attr_accessor :string, :number
       end
 
-      class SampleMapper < ValueObjectMapper
+      class SampleMapper
         def build_new(dto)
           Sample.new
         end
@@ -38,7 +38,7 @@ module Mongobzar
       end
 
       describe ValueObjectMapper do
-        subject { SampleMapper.new }
+        subject { ValueObjectMapper.new(SampleMapper.new) }
         let(:sample_string) { 'sample_string' }
         let(:sample_number) { 5 }
         let(:sample_dto) do

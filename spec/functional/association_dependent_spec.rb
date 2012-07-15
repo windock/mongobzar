@@ -27,7 +27,7 @@ module Mongobzar
       attr_accessor :id, :name, :created_at
     end
 
-    class OwnerMapper < Mapper::EntityMapper
+    class OwnerMapper < Mapper::Mapper
       def initialize(pet_repository)
         @pet_repository = pet_repository
       end
@@ -63,7 +63,7 @@ module Mongobzar
 
     end
 
-    class PetMapper < Mapper::EntityMapper
+    class PetMapper < Mapper::Mapper
       def build_new(dto={})
         Pet.new
       end
@@ -106,7 +106,8 @@ module Mongobzar
   end
 end
 
-include Mongobzar::Test
+module Mongobzar
+  module Test
 describe 'Dependent association' do
   def the_only_pet_document
     @pets_collection.find.to_a[0]
@@ -117,9 +118,9 @@ describe 'Dependent association' do
     @owners_collection = @db.collection('owners')
     @owner_repository = OwnerRepository.new('testing', 'owners')
     pet_repository = PetRepository.new('testing', 'pets')
-    pet_repository.mapper = PetMapper.new
+    pet_repository.mapper = Mapper::EntityMapper.new(PetMapper.new)
     @owner_repository.pet_repository = pet_repository
-    @owner_repository.mapper = OwnerMapper.new(pet_repository)
+    @owner_repository.mapper = Mapper::EntityMapper.new(OwnerMapper.new(pet_repository))
     @owner_repository.clear_everything!
 
     @pets_collection = @db.collection('pets')
@@ -203,5 +204,7 @@ describe 'Dependent association' do
         @matcher.assert_loaded([@pet, @pet2], @owner_repository.find(@owner.id).pets)
       end
     end
+  end
+end
   end
 end

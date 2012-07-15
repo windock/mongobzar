@@ -3,6 +3,7 @@ require_relative '../test/person'
 require 'mongobzar/repository/repository'
 require 'mongobzar/mapper/value_object_mapper'
 require 'mongobzar/mapper/simple_mapper'
+require 'mongobzar/mapper/entity_mapper'
 
 module Mongobzar
   module Test
@@ -14,7 +15,7 @@ module Mongobzar
       end
     end
 
-    class PersonMapper < Mapper::EntityMapper
+    class PersonMapper < Mapper::Mapper
       def initialize(address_mapper)
         @address_mapper = address_mapper
       end
@@ -61,14 +62,15 @@ module Mongobzar
   end
 end
 
-include Mongobzar::Test
+module Mongobzar
+  module Test
 describe 'Embedded association' do
   before do
     setup_connection
     @people_collection = @db.collection('people')
     @person_repository = Repository::Repository.new('testing', 'people')
     address_mapper = Mapper::SimpleMapper.new(->(dto) { Address.new(dto['street']) }, [:street])
-    @person_repository.mapper = PersonMapper.new(address_mapper)
+    @person_repository.mapper = Mapper::EntityMapper.new(PersonMapper.new(address_mapper))
     @person_repository.clear_everything!
 
     @person = Person.new
@@ -183,5 +185,7 @@ describe 'Embedded association' do
         @matcher.assert_loaded([@address, @address2], @person_repository.find(@person.id).addresses)
       end
     end
+  end
+end
   end
 end
