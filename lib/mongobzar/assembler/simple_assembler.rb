@@ -1,8 +1,8 @@
-require 'mongobzar/mapper/value_object_mapper'
+require 'mongobzar/assembler/value_object_assembler'
 
 module Mongobzar
-  module Mapper
-    class SimpleMapper < ValueObjectMapper
+  module Assembler
+    class SimpleAssembler < ValueObjectAssembler
       def initialize(build_new, attribute_names=[])
         @build_new = build_new
         @method_names = attribute_names

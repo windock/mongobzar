@@ -1,9 +1,9 @@
-require 'mongobzar/mapper/simple_mapper'
+require 'mongobzar/assembler/simple_assembler'
 
 module Mongobzar
-  module Mapper
+  module Assembler
     module Test
-      describe SimpleMapper do
+      describe SimpleAssembler do
         class Sample
           def initialize(string=nil, number=nil)
             @string = string
@@ -28,7 +28,7 @@ module Mongobzar
         let(:sample_number) { 5 }
         let(:obj) { Sample.new(sample_string, sample_number) }
         let(:sample_dto) { { string: sample_string, number: sample_number } }
-        subject { SimpleMapper.new(->(dto) { Sample.new }) }
+        subject { SimpleAssembler.new(->(dto) { Sample.new }) }
 
         context '#build_domain_object' do
           it 'returns nil if dto is nil' do
@@ -43,7 +43,7 @@ module Mongobzar
 
           context 'given attributes' do
             subject do
-              SimpleMapper.new(->(dto) { Sample.new },
+              SimpleAssembler.new(->(dto) { Sample.new },
                                         [:string, :number])
             end
 
@@ -64,7 +64,7 @@ module Mongobzar
 
           context 'for domain object with constructor that requires arguments' do
             it 'uses build_new with dto to build domain object' do
-              strategy = SimpleMapper.new(
+              strategy = SimpleAssembler.new(
                 ->(dto) { SampleWithRequiredArguments.new(dto['string']) },
                 [:string, :number])
               strategy.build_domain_object(sample_dto).should == obj
@@ -86,7 +86,7 @@ module Mongobzar
 
           context 'given an array of attributes' do
             subject do
-              SimpleMapper.new(->(dto) { Sample.new },
+              SimpleAssembler.new(->(dto) { Sample.new },
                                         [:string, :number])
             end
 

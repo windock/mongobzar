@@ -1,6 +1,6 @@
 require_relative 'spec_helper'
 require 'mongobzar/repository/repository'
-require 'mongobzar/mapper/entity_mapper'
+require 'mongobzar/assembler/entity_assembler'
 
 module Mongobzar
   module Test
@@ -8,7 +8,7 @@ module Mongobzar
       attr_accessor :id, :name, :description
     end
 
-    class SimpleObjectMapper < Mapper::Mapper
+    class SimpleObjectAssembler < Assembler::Assembler
       def build_domain_object!(simple_object, dto)
         simple_object.name = dto['name']
         simple_object.description = dto['description']
@@ -55,7 +55,7 @@ describe 'CRUD operations' do
     setup_connection
     @simple_objects_collection = @db.collection('simple_objects')
     @repository = Repository::Repository.new('testing', 'simple_objects')
-    @repository.mapper = Mapper::EntityMapper.new(SimpleObjectMapper.new)
+    @repository.assembler = Assembler::EntityAssembler.new(SimpleObjectAssembler.new)
     @repository.clear_everything!
 
     @so1 = SimpleObject.new

@@ -21,7 +21,7 @@ class TestDomainObject
   end
 end
 
-class TestDomainObjectMapper
+class TestDomainObjectAssembler
   def initialize(id_generator)
     @id_generator = id_generator
   end
@@ -85,7 +85,7 @@ module Mongobzar
         @dto3 = { '_id' => 3, 'name' => 'd3' }
 
         @mc = MappedCollection.new(
-          TestDomainObjectMapper.new(@id_generator))
+          TestDomainObjectAssembler.new(@id_generator))
       end
 
 

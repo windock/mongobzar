@@ -1,9 +1,9 @@
 require 'mongobzar/utility/bson_id_generator'
-require 'mongobzar/mapper/mapper_decorator'
+require 'mongobzar/assembler/assembler_decorator'
 
 module Mongobzar
-  module Mapper
-    class EntityMapper < MapperDecorator
+  module Assembler
+    class EntityAssembler < AssemblerDecorator
       def build_domain_object!(domain_object, dto)
         domain_object.id = dto['_id']
         super

@@ -1,10 +1,10 @@
-require 'mongobzar/mapper/polymorphic_mapper'
-require 'mongobzar/mapper/inheritance_mapper'
-require 'mongobzar/mapper/entity_mapper'
-require 'mongobzar/mapper/value_object_mapper'
+require 'mongobzar/assembler/polymorphic_assembler'
+require 'mongobzar/assembler/inheritance_assembler'
+require 'mongobzar/assembler/entity_assembler'
+require 'mongobzar/assembler/value_object_assembler'
 
 module Mongobzar
-  module Mapper
+  module Assembler
     module Test
       class Sub1
         def foo
@@ -20,32 +20,32 @@ module Mongobzar
         end
       end
 
-      class Sub1Mapper < Mapper
+      class Sub1Assembler < Assembler
         def build_new(dto={})
           Sub1.new
         end
       end
 
-      class Sub2Mapper < Mapper
+      class Sub2Assembler < Assembler
         def build_new(dto={})
           Sub2.new
         end
       end
 
-      describe PolymorphicMapper do
-        let(:sub1_mapper) do
-          InheritanceMapper.new(Sub1, 'sub1', ValueObjectMapper.new(Sub1Mapper.new))
+      describe PolymorphicAssembler do
+        let(:sub1_assembler) do
+          InheritanceAssembler.new(Sub1, 'sub1', ValueObjectAssembler.new(Sub1Assembler.new))
         end
 
-        let(:sub2_mapper) do
-          entity_mapper = EntityMapper.new(Sub2Mapper.new)
-          InheritanceMapper.new(Sub2, 'sub2', entity_mapper)
+        let(:sub2_assembler) do
+          entity_assembler = EntityAssembler.new(Sub2Assembler.new)
+          InheritanceAssembler.new(Sub2, 'sub2', entity_assembler)
         end
 
         subject do
-          PolymorphicMapper.new([
-            sub1_mapper,
-            sub2_mapper
+          PolymorphicAssembler.new([
+            sub1_assembler,
+            sub2_assembler
           ])
         end
 

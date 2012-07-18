@@ -6,7 +6,7 @@ module Mongobzar
         @mongo_collection_name = mongo_collection_name
       end
 
-      attr_accessor :mapper
+      attr_accessor :assembler
 
       def clear_everything!
         mongo_collection.remove

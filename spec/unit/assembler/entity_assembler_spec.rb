@@ -1,8 +1,8 @@
-require 'mongobzar/mapper/entity_mapper'
+require 'mongobzar/assembler/entity_assembler'
 require 'mongobzar/utility/bson_id_generator'
 
 module Mongobzar
-  module Mapper
+  module Assembler
     module Test
       class SampleWithId
         def initialize(string=nil, id=nil)
@@ -18,7 +18,7 @@ module Mongobzar
         attr_accessor :string, :id
       end
 
-      class SampleEntityMapper
+      class SampleEntityAssembler
         def build_new(dto)
           SampleWithId.new
         end
@@ -36,8 +36,8 @@ module Mongobzar
         end
       end
 
-      describe EntityMapper do
-        subject { EntityMapper.new(SampleEntityMapper.new) }
+      describe EntityAssembler do
+        subject { EntityAssembler.new(SampleEntityAssembler.new) }
 
         let(:sample_id) { 'sample_id' }
         let(:sample_string) { 'sample_string' }

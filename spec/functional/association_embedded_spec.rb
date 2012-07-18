@@ -1,9 +1,9 @@
 require_relative 'spec_helper'
 require_relative '../test/person'
 require 'mongobzar/repository/repository'
-require 'mongobzar/mapper/value_object_mapper'
-require 'mongobzar/mapper/simple_mapper'
-require 'mongobzar/mapper/entity_mapper'
+require 'mongobzar/assembler/value_object_assembler'
+require 'mongobzar/assembler/simple_assembler'
+require 'mongobzar/assembler/entity_assembler'
 
 module Mongobzar
   module Test
@@ -15,14 +15,14 @@ module Mongobzar
       end
     end
 
-    class PersonMapper < Mapper::Mapper
-      def initialize(address_mapper)
-        @address_mapper = address_mapper
+    class PersonAssembler < Assembler::Assembler
+      def initialize(address_assembler)
+        @address_assembler = address_assembler
       end
 
       def build_dto!(dto, person)
-        dto['work_address'] = address_mapper.build_dto(person.work_address)
-        dto['addresses'] = address_mapper.build_dtos(person.addresses)
+        dto['work_address'] = address_assembler.build_dto(person.work_address)
+        dto['addresses'] = address_assembler.build_dtos(person.addresses)
       end
 
       def build_new(dto={})
@@ -30,14 +30,14 @@ module Mongobzar
       end
 
       def build_domain_object!(person, dto)
-        address_mapper.build_domain_objects(dto['addresses']).each do |address|
+        address_assembler.build_domain_objects(dto['addresses']).each do |address|
           person.add_address(address)
         end
-        person.work_address = address_mapper.build_domain_object(dto['work_address'])
+        person.work_address = address_assembler.build_domain_object(dto['work_address'])
       end
 
       private
-        attr_reader :address_mapper
+        attr_reader :address_assembler
     end
 
     class AddressMappingMatcher < EmbeddedMappingMatcher
@@ -69,8 +69,8 @@ describe 'Embedded association' do
     setup_connection
     @people_collection = @db.collection('people')
     @person_repository = Repository::Repository.new('testing', 'people')
-    address_mapper = Mapper::SimpleMapper.new(->(dto) { Address.new(dto['street']) }, [:street])
-    @person_repository.mapper = Mapper::EntityMapper.new(PersonMapper.new(address_mapper))
+    address_assembler = Assembler::SimpleAssembler.new(->(dto) { Address.new(dto['street']) }, [:street])
+    @person_repository.assembler = Assembler::EntityAssembler.new(PersonAssembler.new(address_assembler))
     @person_repository.clear_everything!
 
     @person = Person.new

@@ -1,7 +1,7 @@
-require 'mongobzar/mapper/value_object_mapper'
+require 'mongobzar/assembler/value_object_assembler'
 
 module Mongobzar
-  module Mapper
+  module Assembler
     module Test
       class Sample
         def initialize(string=nil, number=nil)
@@ -16,7 +16,7 @@ module Mongobzar
         attr_accessor :string, :number
       end
 
-      class SampleMapper
+      class SampleAssembler
         def build_new(dto)
           Sample.new
         end
@@ -37,8 +37,8 @@ module Mongobzar
         end
       end
 
-      describe ValueObjectMapper do
-        subject { ValueObjectMapper.new(SampleMapper.new) }
+      describe ValueObjectAssembler do
+        subject { ValueObjectAssembler.new(SampleAssembler.new) }
         let(:sample_string) { 'sample_string' }
         let(:sample_number) { 5 }
         let(:sample_dto) do

@@ -1,8 +1,8 @@
 require_relative 'spec_helper'
 require 'mongobzar/repository/repository'
 require 'mongobzar/repository/dependent_repository'
-require 'mongobzar/mapper/value_object_mapper'
-require 'mongobzar/mapper/entity_mapper'
+require 'mongobzar/assembler/value_object_assembler'
+require 'mongobzar/assembler/entity_assembler'
 
 module Mongobzar
   module Test
@@ -27,7 +27,7 @@ module Mongobzar
       attr_accessor :id, :name, :created_at
     end
 
-    class OwnerMapper < Mapper::Mapper
+    class OwnerAssembler < Assembler::Assembler
       def initialize(pet_repository)
         @pet_repository = pet_repository
       end
@@ -63,7 +63,7 @@ module Mongobzar
 
     end
 
-    class PetMapper < Mapper::Mapper
+    class PetAssembler < Assembler::Assembler
       def build_new(dto={})
         Pet.new
       end
@@ -118,9 +118,9 @@ describe 'Dependent association' do
     @owners_collection = @db.collection('owners')
     @owner_repository = OwnerRepository.new('testing', 'owners')
     pet_repository = PetRepository.new('testing', 'pets')
-    pet_repository.mapper = Mapper::EntityMapper.new(PetMapper.new)
+    pet_repository.assembler = Assembler::EntityAssembler.new(PetAssembler.new)
     @owner_repository.pet_repository = pet_repository
-    @owner_repository.mapper = Mapper::EntityMapper.new(OwnerMapper.new(pet_repository))
+    @owner_repository.assembler = Assembler::EntityAssembler.new(OwnerAssembler.new(pet_repository))
     @owner_repository.clear_everything!
 
     @pets_collection = @db.collection('pets')

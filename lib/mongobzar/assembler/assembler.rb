@@ -1,6 +1,6 @@
 module Mongobzar
-  module Mapper
-    class Mapper
+  module Assembler
+    class Assembler
 
       def build_domain_object!(domain_object, dto)
       end

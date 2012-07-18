@@ -1,7 +1,7 @@
-require 'mongobzar/mapper/inheritance_mapper'
+require 'mongobzar/assembler/inheritance_assembler'
 
 module Mongobzar
-  module Mapper
+  module Assembler
     module Test
       class Sub1
         attr_accessor :id
@@ -12,15 +12,15 @@ module Mongobzar
         end
       end
 
-      describe InheritanceMapper do
-        let(:mapper) { stub(build_domain_object!: nil, build_new: Sub1.new) }
+      describe InheritanceAssembler do
+        let(:assembler) { stub(build_domain_object!: nil, build_new: Sub1.new) }
         subject do
-          InheritanceMapper.new(Sub1, 'sub1', mapper)
+          InheritanceAssembler.new(Sub1, 'sub1', assembler)
         end
 
         describe '#build_dto!' do
           it 'sets type to dto' do
-            mapper.stub!(:build_dto!)
+            assembler.stub!(:build_dto!)
             dto = {}
             subject.build_dto!(dto, stub)
             dto.should == { 'type' => 'sub1' }
@@ -35,10 +35,10 @@ module Mongobzar
           subject.type_code.should == 'sub1'
         end
 
-        it 'may have mapper injected' do
-          mapper = stub
-          subject.mapper = stub
-          subject.mapper = mapper
+        it 'may have assembler injected' do
+          assembler = stub
+          subject.assembler = stub
+          subject.assembler = assembler
         end
       end
     end
