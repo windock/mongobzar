@@ -23,6 +23,11 @@ module Mongobzar
         mapper.build_domain_object!(domain_object, dto)
       end
 
+      #TEST_ME
+      def link_domain_object(domain_object, dto)
+        domain_object.id = dto['_id']
+      end
+
       protected
         attr_reader :mapper
     end
