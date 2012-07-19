@@ -4,24 +4,24 @@ module Mongobzar
       include RSpec::Matchers::DSL
       include RSpec::Matchers
 
-      def assert_correct_dependent_dtos(domain_objects, parent, dtos)
-        domain_objects.size.should == dtos.size
-        domain_objects.each_with_index do |domain_object, i|
-          assert_correct_dependent_dto(domain_object, parent, dtos[i])
+      def assert_correct_dependent_dtos(objs, parent, dtos)
+        objs.size.should == dtos.size
+        objs.each_with_index do |obj, i|
+          assert_correct_dependent_dto(obj, parent, dtos[i])
         end
       end
 
-      def assert_correct_dtos_collection(domain_objects, dtos)
-        domain_objects.size.should == dtos.size
-        domain_objects.each_with_index do |domain_object, i|
-          assert_correct_dto(domain_object, dtos[i])
+      def assert_correct_dtos_collection(objs, dtos)
+        objs.size.should == dtos.size
+        objs.each_with_index do |obj, i|
+          assert_correct_dto(obj, dtos[i])
         end
       end
 
-      def assert_loaded(specifications, domain_objects)
-        specifications.size.should == domain_objects.size
+      def assert_loaded(specifications, objs)
+        specifications.size.should == objs.size
         specifications.each_with_index do |specification, i|
-          assert_single_loaded(specification, domain_objects[i])
+          assert_single_loaded(specification, objs[i])
         end
       end
     end
@@ -47,9 +47,9 @@ module Mongobzar
         given_id.should == dtos[0]['_id']
       end
 
-      def assert_single_persisted_with_given_id(domain_object, given_id)
+      def assert_single_persisted_with_given_id(obj, given_id)
         dto = find_one_document
-        assert_correct_dto(domain_object, dto)
+        assert_correct_dto(obj, dto)
         given_id.should == dto['_id']
       end
     end

@@ -4,7 +4,7 @@ module Mongobzar
       def initialize(assembler)
         @updated = false
         @loaded_dtos = false
-        @loaded_domain_objects = false
+        @loaded_objs = false
         @assembler = assembler
       end
 
@@ -13,44 +13,44 @@ module Mongobzar
         @dtos = dtos
       end
 
-      def update(domain_objects)
+      def update(objs)
         @updated = true
-        @domain_objects = domain_objects
+        @objs = objs
       end
 
-      def load_domain_objects(domain_objects)
-        @loaded_domain_objects = true
-        @domain_objects = domain_objects
+      def load_domain_objects(objs)
+        @loaded_objs = true
+        @objs = objs
       end
 
       def dict
         res = {}
-        if @loaded_domain_objects
-          @domain_objects.each do |domain_object|
-            res[domain_object] = assembler.build_dto(domain_object)
+        if @loaded_objs
+          @objs.each do |obj|
+            res[obj] = assembler.build_dto(obj)
           end
         elsif @updated
           updated_pairs = {}
-          @domain_objects.reject do |domain_object|
-            domain_object.id.nil?
-          end.each do |domain_object_with_id|
-            dto = @dtos.detect { |dto| dto['_id'] == domain_object_with_id.id }
-            assembler.update_dto!(dto, domain_object_with_id)
-            updated_pairs[domain_object_with_id] = dto
+          @objs.reject do |obj|
+            obj.id.nil?
+          end.each do |obj_with_id|
+            dto = @dtos.detect { |dto| dto['_id'] == obj_with_id.id }
+            assembler.update_dto!(dto, obj_with_id)
+            updated_pairs[obj_with_id] = dto
           end
 
           new_pairs = {}
-          @domain_objects.select do |domain_object|
-            domain_object.id.nil?
-          end.each do |domain_object|
-            dto = assembler.build_dto(domain_object)
-            new_pairs[domain_object] = dto
+          @objs.select do |obj|
+            obj.id.nil?
+          end.each do |obj|
+            dto = assembler.build_dto(obj)
+            new_pairs[obj] = dto
           end
           res = updated_pairs.merge(new_pairs)
         elsif @loaded_dtos
           @dtos.each do |dto|
-            domain_object = assembler.build_domain_object(dto)
-            res[domain_object] = dto
+            obj = assembler.build_domain_object(dto)
+            res[obj] = dto
           end
         end
         res

@@ -11,21 +11,21 @@ module Mongobzar
         assembler.build_new(dto)
       end
 
-      def update_dto!(dto, domain_object)
-        assembler.update_dto!(dto, domain_object)
+      def update_dto!(dto, obj)
+        assembler.update_dto!(dto, obj)
       end
 
-      def build_dto!(dto, domain_object)
-        assembler.build_dto!(dto, domain_object)
+      def build_dto!(dto, obj)
+        assembler.build_dto!(dto, obj)
       end
 
-      def build_domain_object!(domain_object, dto)
-        assembler.build_domain_object!(domain_object, dto)
+      def build_domain_object!(obj, dto)
+        assembler.build_domain_object!(obj, dto)
       end
 
       #TEST_ME
-      def link_domain_object(domain_object, dto)
-        domain_object.id = dto['_id']
+      def link_domain_object(obj, dto)
+        obj.id = dto['_id']
       end
 
       protected

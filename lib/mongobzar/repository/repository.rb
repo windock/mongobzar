@@ -29,25 +29,25 @@ module Mongobzar
         mongo_collection.insert(dto)
       end
 
-      def insert(domain_object)
-        dto = assembler.build_dto(domain_object)
+      def insert(obj)
+        dto = assembler.build_dto(obj)
         insert_dto(dto)
-        update_domain_object_after_insert(domain_object, dto)
+        update_domain_object_after_insert(obj, dto)
       end
 
-      def update_domain_object_after_insert(domain_object, dto)
-        assembler.link_domain_object(domain_object, dto)
+      def update_domain_object_after_insert(obj, dto)
+        assembler.link_domain_object(obj, dto)
       end
       protected :update_domain_object_after_insert
 
-      def update(domain_object)
-        dto = find_dto(domain_object.id)
-        assembler.update_dto(dto, domain_object)
+      def update(obj)
+        dto = find_dto(obj.id)
+        assembler.update_dto(dto, obj)
         mongo_collection.update({ _id: dto['_id']}, dto)
       end
 
-      def destroy(domain_object)
-        mongo_collection.remove({ _id: domain_object.id })
+      def destroy(obj)
+        mongo_collection.remove({ _id: obj.id })
       end
     end
   end

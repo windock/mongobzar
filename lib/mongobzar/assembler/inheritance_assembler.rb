@@ -12,7 +12,7 @@ module Mongobzar
       attr_reader :domain_object_class, :type_code
       attr_accessor :assembler
 
-      def build_dto!(dto, domain_object)
+      def build_dto!(dto, obj)
         super
         dto['type'] = type_code
       end

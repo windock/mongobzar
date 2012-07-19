@@ -10,19 +10,19 @@ module Mongobzar
 
       def build_domain_object(dto)
         return nil if dto.nil?
-        domain_object = @build_new.call(dto)
+        obj = @build_new.call(dto)
         @method_names.each do |method_name|
           dto_value = dto[method_name] || dto[method_name.to_s]
-          domain_object.send(:"#{method_name}=", dto_value)
+          obj.send(:"#{method_name}=", dto_value)
         end
-        domain_object
+        obj
       end
 
-      def build_dto(domain_object)
-        return nil if domain_object.nil?
+      def build_dto(obj)
+        return nil if obj.nil?
         dto = {}
         @method_names.each do |method_name|
-          dto[method_name] = domain_object.send(method_name)
+          dto[method_name] = obj.send(method_name)
         end
 
         dto

@@ -21,19 +21,19 @@ module Mongobzar
           Sample.new
         end
 
-        def build_domain_object!(domain_object, dto)
-          domain_object.number = dto['number']
-          domain_object.string = dto['string']
+        def build_domain_object!(obj, dto)
+          obj.number = dto['number']
+          obj.string = dto['string']
         end
 
-        def build_dto!(dto, domain_object)
-          dto['number'] = domain_object.number
-          dto['string'] = domain_object.string
+        def build_dto!(dto, obj)
+          dto['number'] = obj.number
+          dto['string'] = obj.string
         end
 
-        def update_dto!(dto, domain_object)
+        def update_dto!(dto, obj)
           dto['string'] = 'updated_string'
-          dto['number'] = domain_object.number
+          dto['number'] = obj.number
         end
       end
 

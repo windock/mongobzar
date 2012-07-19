@@ -2,38 +2,38 @@ module Mongobzar
   module Assembler
     class Assembler
 
-      def build_domain_object!(domain_object, dto)
+      def build_domain_object!(obj, dto)
       end
 
-      def build_dto!(dto, domain_object)
+      def build_dto!(dto, obj)
       end
 
       def build_domain_object(dto)
         return nil unless dto
-        domain_object = build_new(dto)
-        build_domain_object!(domain_object, dto)
-        domain_object
+        obj = build_new(dto)
+        build_domain_object!(obj, dto)
+        obj
       end
 
-      def build_dto(domain_object)
-        return nil unless domain_object
+      def build_dto(obj)
+        return nil unless obj
         dto = {}
-        build_dto!(dto, domain_object)
+        build_dto!(dto, obj)
         dto
       end
 
-      def update_dto(dto, domain_object)
-        return nil unless domain_object
-        update_dto!(dto, domain_object)
+      def update_dto(dto, obj)
+        return nil unless obj
+        update_dto!(dto, obj)
         dto
       end
 
-      def update_dto!(dto, domain_object)
-        build_dto!(dto, domain_object)
+      def update_dto!(dto, obj)
+        build_dto!(dto, obj)
       end
 
-      def build_dtos(domain_objects)
-        domain_objects.map { |obj| build_dto(obj) }
+      def build_dtos(objs)
+        objs.map { |obj| build_dto(obj) }
       end
 
       def build_domain_objects(dtos)

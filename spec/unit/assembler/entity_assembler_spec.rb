@@ -23,15 +23,15 @@ module Mongobzar
           SampleWithId.new
         end
 
-        def build_domain_object!(domain_object, dto)
-          domain_object.string = dto['string']
+        def build_domain_object!(obj, dto)
+          obj.string = dto['string']
         end
 
-        def build_dto!(dto, domain_object)
-          dto['string'] = domain_object.string
+        def build_dto!(dto, obj)
+          dto['string'] = obj.string
         end
 
-        def update_dto!(dto, domain_object)
+        def update_dto!(dto, obj)
           dto['string'] = 'updated_string'
         end
       end
@@ -46,9 +46,9 @@ module Mongobzar
         context '#link_domain_object' do
           context 'given domain object with writable id and dto with _id' do
             it 'sets domain object\'s id with dto\'s _id' do
-              domain_object = SampleWithId.new
-              subject.link_domain_object(domain_object, { '_id' => sample_id })
-              domain_object.id.should == sample_id
+              obj = SampleWithId.new
+              subject.link_domain_object(obj, { '_id' => sample_id })
+              obj.id.should == sample_id
             end
           end
         end

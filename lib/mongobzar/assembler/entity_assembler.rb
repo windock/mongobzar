@@ -4,13 +4,13 @@ require 'mongobzar/assembler/assembler_decorator'
 module Mongobzar
   module Assembler
     class EntityAssembler < AssemblerDecorator
-      def build_domain_object!(domain_object, dto)
-        domain_object.id = dto['_id']
+      def build_domain_object!(obj, dto)
+        obj.id = dto['_id']
         super
       end
 
-      def build_dto!(dto, domain_object)
-        dto['_id'] = domain_object.id || id_generator.next_id
+      def build_dto!(dto, obj)
+        dto['_id'] = obj.id || id_generator.next_id
         super
       end
 
@@ -20,8 +20,8 @@ module Mongobzar
 
       attr_writer :id_generator
 
-      def link_domain_object(domain_object, dto)
-        domain_object.id = dto['_id']
+      def link_domain_object(obj, dto)
+        obj.id = dto['_id']
       end
     end
   end
