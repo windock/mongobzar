@@ -9,22 +9,22 @@ module Mongobzar
         assembler_for_dto(dto).build_domain_object(dto)
       end
 
-      def build_dto(domain_object)
-        assembler_for_domain_object(domain_object).build_dto(domain_object)
+      def build_dto(obj)
+        assembler_for_domain_object(obj).build_dto(obj)
       end
 
-      def update_dto(dto, domain_object)
-        assembler_for_domain_object(domain_object).update_dto(dto, domain_object)
+      def update_dto(dto, obj)
+        assembler_for_domain_object(obj).update_dto(dto, obj)
       end
 
-      def build_dtos(domain_objects)
-        domain_objects.map do |domain_object|
-          assembler_for_domain_object(domain_object).build_dto(domain_object)
+      def build_dtos(objs)
+        objs.map do |obj|
+          assembler_for_domain_object(obj).build_dto(obj)
         end
       end
 
-      def link_domain_object(domain_object, dto)
-        assembler_for_domain_object(domain_object).link_domain_object(domain_object, dto)
+      def link_domain_object(obj, dto)
+        assembler_for_domain_object(obj).link_domain_object(obj, dto)
       end
 
       def build_domain_objects(dtos)
@@ -35,11 +35,15 @@ module Mongobzar
 
       protected
         def assembler_for_dto(dto)
-          assemblers.find { |assembler| assembler.type_code == dto['type'] }
+          assemblers.find do |assembler|
+            assembler.type_code == dto['type']
+          end
         end
 
-        def assembler_for_domain_object(domain_object)
-          assemblers.find { |assembler| domain_object.kind_of?(assembler.domain_object_class) }
+        def assembler_for_domain_object(obj)
+          assemblers.find do |assembler|
+            obj.kind_of?(assembler.domain_object_class)
+          end
         end
 
       private
