@@ -33,9 +33,19 @@ module Mongobzar
         let(:dto2) { stub('Dto2') }
 
         context '#build_dto' do
-          it 'delegates to the an appropriate assembler' do
+          it 'delegates to the appropriate assembler' do
             subject.build_dto(domain_object1).should == dto1
             subject.build_dto(domain_object2).should == dto2
+          end
+        end
+
+        context '#update_dto' do
+          it 'delegates to the appropriate assembler' do
+            assembler1.should_receive(:update_dto).with(dto1, domain_object1)
+            subject.update_dto(dto1, domain_object1)
+
+            assembler2.should_receive(:update_dto).with(dto2, domain_object2)
+            subject.update_dto(dto2, domain_object2)
           end
         end
 

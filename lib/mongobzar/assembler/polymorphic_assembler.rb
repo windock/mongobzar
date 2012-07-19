@@ -13,6 +13,10 @@ module Mongobzar
         assembler_for_domain_object(domain_object).build_dto(domain_object)
       end
 
+      def update_dto(dto, domain_object)
+        assembler_for_domain_object(domain_object).update_dto(dto, domain_object)
+      end
+
       def build_dtos(domain_objects)
         domain_objects.map do |domain_object|
           assembler_for_domain_object(domain_object).build_dto(domain_object)

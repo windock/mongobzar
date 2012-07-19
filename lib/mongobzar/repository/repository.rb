@@ -42,7 +42,7 @@ module Mongobzar
 
       def update(domain_object)
         dto = find_dto(domain_object.id)
-        assembler.update_dto!(dto, domain_object)
+        assembler.update_dto(dto, domain_object)
         mongo_collection.update({ _id: dto['_id']}, dto)
       end
 
