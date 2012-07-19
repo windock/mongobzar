@@ -25,6 +25,9 @@ module Mongobzar
 
     class Pet
       attr_accessor :id, :name, :created_at
+      def initialize(name=nil)
+        @name = name
+      end
     end
 
     class OwnerAssembler < Assembler::Assembler
@@ -106,42 +109,37 @@ module Mongobzar
   end
 end
 
-module Mongobzar
-  module Test
+module Mongobzar module Test
 describe 'Dependent association' do
-  def the_only_pet_document
-    @pets_collection.find.to_a[0]
+  let(:the_only_pet_document) { pets_collection.find.to_a[0] }
+  let(:owner_repository) do
+    res = OwnerRepository.new('testing', 'owners')
+    pet_repository = PetRepository.new('testing', 'pets')
+    pet_repository.assembler = Assembler::EntityAssembler.new(PetAssembler.new)
+    res.pet_repository = pet_repository
+    res.assembler = Assembler::EntityAssembler.new(OwnerAssembler.new(pet_repository))
+    res
   end
+  let(:pets_collection) { @db.collection('pets') }
+  let(:owner) { Owner.new }
+  let(:owner2) { Owner.new }
+  let(:pet)  { Pet.new('pet1') }
+  let(:pet2) { Pet.new('pet2') }
+  let(:pet3) { Pet.new('pet3') }
+  let(:pet4) { Pet.new('pet4') }
+  let(:matcher) { PetMappingMatcher.new(pets_collection) }
 
   before do
     setup_connection
-    @owners_collection = @db.collection('owners')
-    @owner_repository = OwnerRepository.new('testing', 'owners')
-    pet_repository = PetRepository.new('testing', 'pets')
-    pet_repository.assembler = Assembler::EntityAssembler.new(PetAssembler.new)
-    @owner_repository.pet_repository = pet_repository
-    @owner_repository.assembler = Assembler::EntityAssembler.new(OwnerAssembler.new(pet_repository))
-    @owner_repository.clear_everything!
-
-    @pets_collection = @db.collection('pets')
-
-    @owner = Owner.new
-    @owner2 = Owner.new
-
-    @pet, @pet2, @pet3, @pet4 = 1.upto(4).map do |i|
-      pet = Pet.new
-      pet.name = "pet#{i}"
-      pet
-    end
-    @matcher = PetMappingMatcher.new(@pets_collection)
+    owner_repository.clear_everything!
   end
 
   describe 'insert' do
     it 'puts dependent documents to separate collection' do
-      @owner.add_pet(@pet)
-      @owner.add_pet(@pet2)
-      @owner_repository.insert(@owner)
-      @matcher.assert_dependent_persisted([@pet, @pet2], @owner)
+      owner.add_pet(pet)
+      owner.add_pet(pet2)
+      owner_repository.insert(owner)
+      matcher.assert_dependent_persisted([pet, pet2], owner)
     end
   end
 
@@ -149,62 +147,61 @@ describe 'Dependent association' do
     describe 'updates dependent documents in separate collection' do
       describe 'creates new' do
         it 'works if was empty' do
-          @owner_repository.insert(@owner)
+          owner_repository.insert(owner)
 
-          @owner.add_pet(@pet)
-          @owner.add_pet(@pet2)
+          owner.add_pet(pet)
+          owner.add_pet(pet2)
 
-          @owner_repository.update(@owner)
-          @matcher.assert_dependent_persisted([@pet, @pet2], @owner)
+          owner_repository.update(owner)
+          matcher.assert_dependent_persisted([pet, pet2], owner)
         end
 
         it 'works if was not empty' do
-          @owner.add_pet(@pet)
-          @owner_repository.insert(@owner)
+          owner.add_pet(pet)
+          owner_repository.insert(owner)
 
-          @owner.add_pet(@pet2)
-          @owner_repository.update(@owner)
-          @matcher.assert_dependent_persisted([@pet, @pet2], @owner)
+          owner.add_pet(pet2)
+          owner_repository.update(owner)
+          matcher.assert_dependent_persisted([pet, pet2], owner)
         end
       end
 
       it 'deletes removed' do
-        [@pet, @pet2, @pet3, @pet4].each do |pet|
-          @owner.add_pet(pet)
+        [pet, pet2, pet3, pet4].each do |pet|
+          owner.add_pet(pet)
         end
-        @owner_repository.insert(@owner)
+        owner_repository.insert(owner)
 
-        [@pet2, @pet4].each do |pet|
-          @owner.remove_pet(pet)
+        [pet2, pet4].each do |pet|
+          owner.remove_pet(pet)
         end
-        @owner_repository.update(@owner)
-        @matcher.assert_dependent_persisted([@pet, @pet3], @owner)
+        owner_repository.update(owner)
+        matcher.assert_dependent_persisted([pet, pet3], owner)
       end
 
       it 'updates existing' do
-        @owner.add_pet(@pet)
-        @owner_repository.insert(@owner)
+        owner.add_pet(pet)
+        owner_repository.insert(owner)
 
-        @pet.name = 'new_name'
-        @owner_repository.update(@owner)
-        @matcher.assert_dependent_persisted([@pet], @owner)
+        pet.name = 'new_name'
+        owner_repository.update(owner)
+        matcher.assert_dependent_persisted([pet], owner)
       end
     end
 
     describe 'find' do
       it 'returns domain object with dependent domain objects' do
-        @owner.add_pet(@pet)
-        @owner.add_pet(@pet2)
+        owner.add_pet(pet)
+        owner.add_pet(pet2)
 
-        @owner2.add_pet(@pet3)
+        owner2.add_pet(pet3)
 
-        @owner_repository.insert(@owner)
-        @owner_repository.insert(@owner2)
+        owner_repository.insert(owner)
+        owner_repository.insert(owner2)
 
-        @matcher.assert_loaded([@pet, @pet2], @owner_repository.find(@owner.id).pets)
+        matcher.assert_loaded([pet, pet2], owner_repository.find(owner.id).pets)
       end
     end
   end
 end
-  end
-end
+end end

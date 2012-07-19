@@ -48,24 +48,31 @@ module Mongobzar
   end
 end
 
-module Mongobzar
-  module Test
+module Mongobzar module Test
 describe 'CRUD operations' do
+  let(:simple_objects_collection) { @db.collection('simple_objects') }
+  let(:repository) do
+    repository = Repository::Repository.new('testing', 'simple_objects')
+    repository.assembler = Assembler::EntityAssembler.new(SimpleObjectAssembler.new)
+    repository
+  end
+  let(:so1) do
+    so1 = SimpleObject.new
+    so1.name = 'name1'
+    so1.description = 'desc1'
+    so1
+  end
+  let(:so2) do
+    so2 = SimpleObject.new
+    so2.name = 'desc2'
+    so2.description = 'desc2'
+    so2
+  end
+
+  let(:matcher) { SimpleObjectMappingMatcher.new(simple_objects_collection) }
   before do
     setup_connection
-    @simple_objects_collection = @db.collection('simple_objects')
-    @repository = Repository::Repository.new('testing', 'simple_objects')
-    @repository.assembler = Assembler::EntityAssembler.new(SimpleObjectAssembler.new)
-    @repository.clear_everything!
-
-    @so1 = SimpleObject.new
-    @so1.name = 'name1'
-    @so1.description = 'desc1'
-
-    @so2 = SimpleObject.new
-    @so2.name = 'desc2'
-    @so2.description = 'desc2'
-    @matcher = SimpleObjectMappingMatcher.new(@simple_objects_collection)
+    repository.clear_everything!
   end
 
   describe 'basic setup' do
@@ -95,10 +102,10 @@ describe 'CRUD operations' do
 
   describe 'insert' do
     it 'puts documents to mongo collection' do
-      @repository.insert(@so1)
-      @repository.insert(@so2)
+      repository.insert(so1)
+      repository.insert(so2)
 
-      @matcher.assert_persisted([@so1, @so2])
+      matcher.assert_persisted([so1, so2])
     end
 
     it 'raises InvalidDomainObject if nil was passed' do
@@ -108,52 +115,52 @@ describe 'CRUD operations' do
 
   describe 'update' do
     it 'updates document' do
-      @repository.insert(@so1)
+      repository.insert(so1)
 
-      @so1.name = 'new_name'
-      @repository.update(@so1)
-      @matcher.assert_persisted([@so1])
+      so1.name = 'new_name'
+      repository.update(so1)
+      matcher.assert_persisted([so1])
     end
   end
 
   describe 'destroy' do
     it 'removes document from mongo collection' do
-      @repository.insert(@so1)
-      @repository.insert(@so2)
+      repository.insert(so1)
+      repository.insert(so2)
 
-      @repository.destroy(@so1)
-      @matcher.assert_persisted([@so2])
+      repository.destroy(so1)
+      matcher.assert_persisted([so2])
     end
   end
 
   describe 'all' do
     it 'returns all domain objects' do
-      @repository.insert(@so1)
-      @repository.insert(@so2)
+      repository.insert(so1)
+      repository.insert(so2)
 
-      @matcher.assert_loaded([@so1, @so2], @repository.all)
+      matcher.assert_loaded([so1, so2], repository.all)
     end
   end
 
   describe 'find' do
     it 'returns domain object by BSON::ObjectId' do
-      @repository.insert(@so1)
-      @repository.insert(@so2)
+      repository.insert(so1)
+      repository.insert(so2)
 
-      found_so1 = @repository.find(@so1.id)
-      found_so2 = @repository.find(@so2.id)
+      found_so1 = repository.find(so1.id)
+      found_so2 = repository.find(so2.id)
 
-      @matcher.assert_loaded([@so1, @so2], [found_so1, found_so2])
+      matcher.assert_loaded([so1, so2], [found_so1, found_so2])
     end
 
     it 'returns domain object by BSON::ObjectId as string' do
-      @repository.insert(@so1)
-      found_so1 = @repository.find(@so1.id.to_s)
-      @matcher.assert_loaded([@so1], [found_so1])
+      repository.insert(so1)
+      found_so1 = repository.find(so1.id.to_s)
+      matcher.assert_loaded([so1], [found_so1])
     end
 
     it 'raises DocumentNotFound if document with such id was not found' do
-      expect { @repository.find(BSON::ObjectId.new) }.to raise_error(Mongobzar::Repository::DocumentNotFound)
+      expect { repository.find(BSON::ObjectId.new) }.to raise_error(Mongobzar::Repository::DocumentNotFound)
     end
   end
 
@@ -161,5 +168,4 @@ describe 'CRUD operations' do
     pending
   end
 end
-  end
-end
+end end
