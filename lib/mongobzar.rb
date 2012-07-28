@@ -12,6 +12,7 @@ require 'mongobzar/assembler/entity_assembler'
 require 'mongobzar/assembler/value_object_assembler'
 require 'mongobzar/assembler/simple_assembler'
 require 'mongobzar/assembler/polymorphic_assembler'
+require 'mongobzar/assembler/inheritance_assembler'
 
 require 'mongobzar/utility/mapped_collection'
 require 'mongobzar/utility/bson_id_generator'
