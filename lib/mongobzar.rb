@@ -15,3 +15,4 @@ require 'mongobzar/assembler/polymorphic_assembler'
 
 require 'mongobzar/utility/mapped_collection'
 require 'mongobzar/utility/bson_id_generator'
+require 'mongobzar/utility/virtual_proxy'
