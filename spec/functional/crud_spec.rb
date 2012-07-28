@@ -2,53 +2,49 @@ require_relative 'spec_helper'
 require 'mongobzar/repository/repository'
 require 'mongobzar/assembler/entity_assembler'
 
-module Mongobzar
-  module Test
-    class SimpleObject
-      attr_accessor :id, :name, :description
+module Mongobzar module Test
+  class SimpleObject
+    attr_accessor :id, :name, :description
+  end
+
+  class SimpleObjectAssembler < Assembler::Assembler
+    def build_domain_object!(simple_object, dto)
+      simple_object.name = dto['name']
+      simple_object.description = dto['description']
     end
 
-    class SimpleObjectAssembler < Assembler::Assembler
-      def build_domain_object!(simple_object, dto)
-        simple_object.name = dto['name']
-        simple_object.description = dto['description']
-      end
-
-      def build_dto!(dto, simple_object)
-        dto['name'] = simple_object.name
-        dto['description'] = simple_object.description
-      end
-
-      def build_new(dto)
-        SimpleObject.new
-      end
+    def build_dto!(dto, simple_object)
+      dto['name'] = simple_object.name
+      dto['description'] = simple_object.description
     end
 
-    class SimpleObjectMappingMatcher < MappingMatcher
-      def initialize(collection)
-        @collection = collection
-      end
-
-      def assert_persisted(simple_objects)
-        assert_correct_dtos_collection(simple_objects, @collection.find.to_a)
-      end
-
-      def assert_correct_dto(simple_object, dto)
-        simple_object.id.should == dto['_id']
-        simple_object.name.should == dto['name']
-        simple_object.description.should == dto['description']
-      end
-
-      def assert_single_loaded(specification, simple_object)
-        specification.id.should == simple_object.id
-        specification.name.should == simple_object.name
-        specification.description.should == simple_object.description
-      end
+    def build_new(dto)
+      SimpleObject.new
     end
   end
-end
 
-module Mongobzar module Test
+  class SimpleObjectMappingMatcher < MappingMatcher
+    def initialize(collection)
+      @collection = collection
+    end
+
+    def assert_persisted(simple_objects)
+      assert_correct_dtos_collection(simple_objects, @collection.find.to_a)
+    end
+
+    def assert_correct_dto(simple_object, dto)
+      simple_object.id.should == dto['_id']
+      simple_object.name.should == dto['name']
+      simple_object.description.should == dto['description']
+    end
+
+    def assert_single_loaded(specification, simple_object)
+      specification.id.should == simple_object.id
+      specification.name.should == simple_object.name
+      specification.description.should == simple_object.description
+    end
+  end
+
 describe 'CRUD operations' do
   let(:simple_objects_collection) { @db.collection('simple_objects') }
   let(:repository) do
