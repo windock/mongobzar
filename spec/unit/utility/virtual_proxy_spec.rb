@@ -35,5 +35,10 @@ module Mongobzar module Utility module Test
     let(:actual) { stub }
     it 'does delegate build-in Object methods' do
     end
+
+    it 'delegates == to actual' do
+      loader.stub!(:call) { actual }
+      subject.should == actual
+    end
   end
 end end end

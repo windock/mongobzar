@@ -9,6 +9,10 @@ module Mongobzar
         actual.send(name, *args)
       end
 
+      def ==(o)
+        actual == o
+      end
+
       private
         attr_reader :loader
 
